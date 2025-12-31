@@ -1,0 +1,1708 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vibrations des structures</title>
+<link rel="icon" href="../assets/logo.png" type="image/png">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+<div class="container">
+    <a href="../index.html" class="back-link">← Retour</a>
+    <h1>Vibrations des structures</h1>
+
+    <h2>1.1 Introduction</h2>
+
+    <p>La majeur partie des systèmes mécaniques subissent des vibrations, qui sont souvent indésirables ou même destructrices. 
+      Leurs présences peuvent être liées à un mouvement du système (moteurs, pompes, etc...) ou bien à un effort extérieur appliqué sur la structure (forces, pressions, etc...).</p>
+    
+    <section class="media-box is-figure">
+      <header class="media-box__header">
+        <span class="media-box__title">
+          Figure 1.1 — Structures soumis à des vibrations mécaniques
+        </span>
+      </header>
+
+      <div class="media-grid">
+        <figure class="media-item">
+          <div class="media-frame">
+            <img
+              src="images/moteur_a_alcool_charon.jpg"
+              alt="Moteur à alcool Charon. Gravure A. Davoust."
+              style="--scale: 0.8"
+            >
+          </div>
+          <figcaption>Moteur à alcool Charon. Gravure A. Davoust.</figcaption>
+        </figure>
+
+        <figure class="media-item">
+          <div class="media-frame">
+            <img
+              src="images/pont_de_tacoma.jpg"
+              alt="Pont du détroit de Tacoma (1940)"
+              style="--scale: 0.9;"
+            >
+          </div>
+          <figcaption>Pont du détroit de Tacoma (1940)</figcaption>
+        </figure>
+      </div>
+    </section>
+
+
+    <p>L'analyse vibratoire a commencé au XIXème siècle après l'effrondrement de plusieurs édifices civils. 
+      L'un des plus connus étant le pont de Broughton, construit en 1826 puis détruit en 1831, ou encore le pont du détroit de Tacoma, inauguré et éffondré en 1940.
+    </p>
+
+    <p>
+    La chute du pont de Broughton a été provoquée par la traversée d'une troupe millitaire, qui a pas cadencé, a apporté un phénomène de résonance mécanique provoquant l'accident sans victime.
+    </p>
+
+    <section class="math-box is-definition">
+      <header class="math-box__header">
+        <span class="math-box__title">Définition 1.1 : Résonance</span>
+      </header>
+
+      <div class="math-box__body">
+        La résonance est un phénomène par lequel un système physique est sensible à certaines fréquences.
+      </div>
+    </section>
+
+    <p>
+      Aujourd'hui, les armées ont pour consigne de rompre le pas lors de la traversée d'un pont. De cette manière, elles évitent de faire vibrer la structure à la résonance mécanique.
+    </p>
+
+    <p>
+      La leçon retenue par les ingénieurs est qu'une structure peut être détruite par une force faible mais répétée à la bonne fréquence.
+    </p>
+
+    <h2>1.2 Objectif</h2>
+    
+    <p>Le but principal de cet article est d'apporter une approche physique aux calculs de vibrations mécaniques pour des cas simples type 1 à \(n\) degrés de liberté.</p>
+
+    <section class="math-box is-definition">
+      <header class="math-box__header">
+        <span class="math-box__title">Définition 1.2 : Degré de liberté « \(ddl\) »</span>
+      </header>
+
+      <div class="math-box__body">
+        Un degré de liberté est le nombre de mouvements possibles d'un système. En vibration, il est défini par le nombre de masses.
+      </div>
+    </section>
+  
+    <h2>1.3 Systèmes mécaniques de vibrations à 1 degré de liberté</h2>
+    
+    <p>
+      Un système mécanique de vibrations à \(1 ddl\) peut être représenté de plusieurs manières :
+    </p>
+
+    <ul>
+        <li>Pendule simple</li>
+        <li>Masse ressort amortisseur</li>
+        <li>Torsion d'un arbre</li>
+    </ul>
+
+    <section class="media-box is-figure">
+      <header class="media-box__header">
+        <span class="media-box__title">
+          Figure 1.2 — Exemples de systèmes mécaniques de vibrations à 1 ddl
+        </span>
+      </header>
+
+      <div class="media-grid">
+        <figure class="media-item">
+          <div class="media-frame">
+            <img
+              src="images\pendule.png"
+              alt="Pendule simple"
+              style="--scale: 0.8"
+            >
+          </div>
+          <figcaption>Pendule simple</figcaption>
+        </figure>
+
+        <figure class="media-item">
+          <div class="media-frame">
+            <img
+              src="images\systeme_masse_ressort_amortisseur.png"
+              alt="Système masse ressort amortisseur"
+              style="--scale: 0.9;"
+            >
+          </div>Système masse ressort amortisseur</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <p>
+      Remarque : Tout au long de ce document, l'hypothèses de petites perturbations (HPP) est considérée. 
+      Ce qui implique l'acceptation des systèmes comme linéaires et que les déplacements sont petits par rapport aux dimensions des systèmes étudiés.
+    </p>
+
+    <h2>1.4 Système masse ressort amortisseur</h2>
+
+    <p>
+      Le modèle qui est le plus considéré dans ce document est le système masse ressort amortisseur composé des éléments suivants :
+    </p>
+
+    <ul>
+        <li>Masse « \(m\) » (kg)</li>
+        <li>Ressort de raideur « \(k\) » (N/m)</li>
+        <li>Ammortisseur avec un coefficient d'amortissement « \(c\) » (N.s/m ou kg/s) : tous les calculs présentés concernent des systèmes dissipatifs mais peuvent être utilisés pour des cas conservatifs</li>
+    </ul>
+    
+    <section class="math-box is-definition">
+      <header class="math-box__header">
+        <span class="math-box__title">Définition 1.1 : Système conservatif / dissipatif</span>
+      </header>
+
+      <div class="math-box__body">
+        Dans le cadre de la vibration des structures, un système dit « conservatif » indique qu'il n'y a pas d'amortissement : \(c=0\), contrairement au système dissipatif où \(c \neq  0\).
+      </div>
+    </section>
+
+    <h4>1.4.1 Régime libre</h4>
+
+    <p>Le  régime libre implique que ni la masse, ni le bâti ne subissent une quelconque force extérieure. Seules les éléments du système ont une incidence sur celui-ci.</p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.1.1 : Équation du mouvement d'un système conservatif libre</span>
+      </header>
+
+      <div class="math-box__body">
+        On considère un axe « \(u\) » et on applique le Principe Fondamental de la Dynamique (PFD) :
+        <div class="math-eq">
+        \[
+        \sum \vec{F} = m \vec{a}\ 
+        \]
+        \[
+        \vec{F_k } + \vec{F_c } = m \vec{a}\ 
+        \]
+        \[
+          \Downarrow
+        \]
+        \[
+          m \ddot{u}(t) = -ku(t) - c\dot{u}(t)
+        \]
+        \[
+          m \ddot{u}(t) + c\dot{u}(t) + ku(t) = 0
+        \]
+        \[
+          \ddot{u}(t) + \frac{c}{m}\dot{u}(t) + \frac{k}{m}u(t) = 0
+        \]
+        </div>
+      </div>
+    </section>
+
+    
+    <p>Le résultat obtenu est une équation différentielle d'ordre \(2\) dont les solutions sont homogènes :</p>
+    <ul>
+        <li>« \(m \ddot{u}(t)\) » : Correspond à l'accélération de la masse « \(m\) »</li>
+        <li>« \(c\dot{u}(t)\) » : Est lié à la force de viscosité de l'amortisseur (supposée linéaire par rapport à sa vitesse) « \(\vec{F_c } = -c\dot{u}(t)\) »</li>
+        <li>« \(ku(t)\) » : Correspond à la force de rappel du ressort « \(\vec{F_k } = -ku(t)\) »</li>
+    </ul>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.1.2 : Équation d’un oscillateur harmonique</span>
+      </header>
+
+      <div class="math-box__body">
+        Cette équation peut également s'écrire sous la forme d'une équation d’un oscillateur harmonique :
+        <div class="math-eq">
+          \[
+          \ddot{u} + 2\,\zeta\,\omega_0\,\dot{u} + \omega_0^2\,u = 0,
+          \qquad
+          \text{avec}
+          \qquad
+          \omega_0 = \sqrt{\frac{k}{m}}
+          \quad \text{et} \quad
+          \zeta = \frac{c}{2\sqrt{k m}}
+          \]
+        </div>
+      </div>
+    </section>
+
+    <section class="math-box is-definition">
+      <header class="math-box__header">
+        <span class="math-box__title">Définition 1.4.1.1 : Pulsation propre « \(\omega_0 \)  \((rad \cdot s^{-1})\) » ou fréquence propre « \(f_0\) \((Hz)\) » </span>
+      </header>
+
+      <div class="math-box__body">
+        La fréquence propre est la fréquence d'oscillation d'un système lorsqu'il est en évolution libre (non-perturbé).
+      </div>
+    </section>
+  
+    <section class="math-box is-definition">
+      <header class="math-box__header">
+        <span class="math-box__title">Définition 1.4.1.2 : Taux d'amortissement « \(\zeta\) » </span>
+      </header>
+
+      <div class="math-box__body">
+        Le taux d'amortissement est une grandeur sans dimension qui caractérise l’intensité des oscillations d'un système physique au cours du temps.
+      </div>
+    </section>
+
+    <p>
+      La résolution d'une équation différentielle de ce type est élémentaire :
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.1.2 : Polynôme caractéristique</span>
+      </header>
+
+      <div class="math-box__body">
+        Il faut commencer par résoudre le polynôme caractéristique :
+        <div class="math-eq">
+          \[
+          r^2 + 2\,\zeta\,\omega_0\,r + \omega_0^2\ = 0,
+          \]
+          \[
+          r= \omega_0 \left( -\zeta \pm \sqrt{\zeta^2 - 1} \right)
+          \]
+        </div>
+      </div>
+    </section>
+
+    <p>
+      Il y a 3 cas de figure :
+    </p>
+    <ul>
+        <li>« \(\zeta > 1\) » : Mouvement sur-amorti → le mouvement est dit « apériodique » : il n’y a pas de vibrations</li>
+        <li>« \(\zeta = 1\) » : Mouvement critique → le mouvement est dit « apériodique » : il n’y a pas de vibrations</li>
+        <li>« \(\zeta < 1\) » : Mouvement sous-amorti → le mouvement est pseudo-périodique et l’amplitude des oscillations suit une décroissance exponentielle</li>
+    </ul>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.1.3 : Solution homogène lorsque « \(\zeta > 1\) »</span>
+      </header>
+
+      <div class="math-box__body">
+        <div class="math-eq">
+          \[
+          u(t) = e^{-\zeta\,\omega_0 t} \left[A\,e^{-\omega_d t} + B\,e^{\omega_d t} \right] \quad (A , B \in \mathbb{R})
+          \qquad
+          \text{avec}
+          \qquad
+          \omega_d = \omega_0\sqrt{1-\zeta^2}
+          \]
+        </div>
+      </div>
+    </section>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.1.4 : Solution homogène lorsque « \(\zeta = 1\) »</span>
+      </header>
+
+      <div class="math-box__body">
+        <div class="math-eq">
+          \[
+          u(t) = e^{-\omega_0 t}\,\bigl(A + B t\bigr) \quad (A , B \in \mathbb{R})
+          \]
+        </div>
+      </div>
+    </section>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.1.5 : Solution homogène lorsque « \(\zeta < 1\) »</span>
+      </header>
+
+      <div class="math-box__body">
+        <div class="math-eq">
+          \[
+          u(t) = e^{-\zeta\,\omega_0 t} \left[ A \cos(\omega_d t) + B \sin(\omega_d t) \right] \quad (A , B \in \mathbb{R})
+          \qquad
+          \text{avec}
+          \qquad
+          \omega_d = \omega_0\sqrt{1-\zeta^2}
+          \]
+        </div>
+      </div>
+    </section>
+
+    <section class="math-box is-definition">
+      <header class="math-box__header">
+        <span class="math-box__title">Définition 1.4.1.3 : Pulsation propre apparente « \(\omega_d \)  \((rad \cdot s^{-1})\) » </span>
+      </header>
+
+      <div class="math-box__body">
+        La pulsation propre apparente est la pulsation des oscillations observées en régime sous-amorti.
+      </div>
+    </section>
+
+    <p>
+      Évidemment, seul le troisème cas (lorsque \(\zeta < 1\)) est étudié de manière approfondie, comme il est le seul qui engendre des vibrations.
+    </p>
+
+    
+    <p>
+      Les constantes \(A\) et \(B\) sont déterminées à partir des conditions initiales suivantes :
+    </p>
+
+    <p>
+      \[
+      \begin{cases}
+      u(0) = u_0 \\[6pt]
+      \dot{u}(0) = \dot{u}_0
+      \end{cases}
+      \]
+    </p>
+
+    <p>
+      On considère la solution générale du régime sous-amorti :
+    </p>
+
+    <p>
+      \[
+      u(t) = e^{-\zeta\,\omega_0 t} \left[ A \cos(\omega_d t) + B \sin(\omega_d t) \right]
+      \]
+    </p>
+
+    <p>
+      En dérivant l’expression précédente, on obtient :
+    </p>
+
+    <p>
+      \[
+      \dot{u}(t) = e^{-\zeta\,\omega_0 t} \left[ -\zeta\,\omega_0 \bigl(A \cos(\omega_d t) + B \sin(\omega_d t)\bigr) - A \omega_d \sin(\omega_d t) + B \omega_d \cos(\omega_d t) \right]
+      \]
+    </p>
+
+    <p>
+      En évaluant ces expressions à l’instant initial \(t = 0\), il vient :
+    </p>
+
+    <p>
+      \[
+      \begin{cases}
+      u(0) = A = u_0 \\[6pt]
+      \dot{u}(0) = -\zeta\,\omega_0 A + \omega_d B = \dot{u}_0
+      \end{cases}
+      \]
+    </p>
+
+    <p>
+      On en déduit les constantes d’intégration :
+    </p>
+
+    <p>
+      \[
+      \begin{cases}
+      A = u_0 \\[8pt]
+      B = \dfrac{\dot{u}_0 + \zeta\,\omega_0 u_0}{\omega_d}
+      \end{cases}
+      \]
+    </p>
+
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.1.6 : Solution d’un oscillateur harmonique en régime sous-amorti</span>
+      </header>
+
+      <div class="math-box__body">
+        Ce qui nous donne l'unique solution :
+        <div class="math-eq">
+          \[
+          u(t) = e^{-\zeta\,\omega_0 t} \left[ u_0 \cos(\omega_d t) + \dfrac{\dot{u}_0 + \zeta\,\omega_0 u_0}{\omega_d} \sin(\omega_d t) \right]
+          \]
+        </div>
+      </div>
+    </section>
+
+    <section class="graph-box is-plot">
+      <header class="graph-box__header">
+        <span class="graph-box__title">
+          Graphique 1.4.1.1 — Lié à l'équation 1.4.1.6
+        </span>
+      </header>
+
+      <div class="graph-box__body">
+        <div class="graph-frame">
+          <div class="graph-embed">
+            <iframe src="plots/regime_libre_plot.html" loading="lazy"></iframe>
+          </div>
+          <div class="graph-caption">
+            Réponse d'un oscillateur harmonique en régime sous-amorti
+          </div>
+          Note : \( |u(t)| = e^{-\zeta \, \omega_0 \, t} \sqrt{u_0^{2}+\left(\frac{\zeta \, \omega_0 \, u_0+\dot{u}_0}{\omega_d}\right)^{2}} \)
+        </div>
+      </div>
+    </section>
+
+
+    <h4>1.4.2 Régime forcé</h4>
+
+    <p>
+      En régime forcé, il est considéré qu'une force extérieure est appliquée sur la masse ou que le bati est excité. 
+      Dans les deux cas, la force d'excitation est supposée relatif à une sinusoïde.
+    </p>
+
+    <section class="media-box is-figure">
+      <header class="media-box__header">
+        <span class="media-box__title">
+          Figure 1.4.1.2 — Schéma d'un système masse ressort amortisseur avec une force d'excitation sur la masse / le bati
+        </span>
+      </header>
+
+      <div class="media-grid">
+        <figure class="media-item">
+          <div class="media-frame">
+            <img
+              src="images/regime_force_sur_masse.png"
+              alt="Schéma d'un système masse ressort amortisseur avec force d'excitation sur la masse"
+              style="--scale: 1"
+            >
+          </div>
+          <figcaption>Force d'excitation sur la masse</figcaption>
+        </figure>
+        <figure class="media-item">
+          <div class="media-frame">
+            <img
+              src="images/regime_force_sur_bati.png"
+              alt="Schéma d'un système masse ressort amortisseur avec force d'excitation sur le bati"
+              style="--scale: 1"
+            >
+          </div>
+          <figcaption>Force d'excitation sur le bati</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <p>
+      Cette fois-ci, l'équation différentielle d'ordre \(2\) n'est pas à égal à un terme nul.
+    </p>
+
+    <p>
+      Les solutions générales sont alors homogènes et particulières : \(u(t) = u_h(t)+u_p(t)\)
+    </p>
+
+    <p>
+      \(u(t)\) est désignée comme les solutions générales, \(u_h(t)\) est connue comme le régime transitoire et \(u_p(t)\) comme le régime stationnaire.
+    </p>
+
+    <p>
+      Les solutions homogènes ont déjà été prouvées dans les paragraphes précédents (cf. Équation 1.4.1.5) : \(u_h(t) = u(t)\) en régime libre.
+      En revanche, la solution particulière \(u_p(t)\) du système demande un peu plus d'effort pour être calculée. Les démarches de recherche de ce résultat varie en fonction de l'excitation imposée sur le système.
+    </p>
+
+    <h5>1.4.2.1 Excitation par force imposée</h5>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.1.1 : Équation du mouvement d'un système dans le cas d'une force imposée</span>
+      </header>
+
+      <div class="math-box__body">
+        On considère un axe « \(u\) » et on applique le Principe Fondamental de la Dynamique (PFD) :
+        <div class="math-eq">
+        \[
+        \sum \vec{F} = m \vec{a}\ 
+        \]
+        \[
+        \vec{F_k } + \vec{F_c} + \vec{F_e} = m \vec{a}\ 
+        \]
+        \[
+          \Downarrow
+        \]
+        \[
+          m \ddot{u}(t) = - ku(t) - c\dot{u}(t) + f(t)
+        \]
+        \[
+          m \ddot{u}(t) + c\dot{u}(t) + ku(t) = f(t)
+        \]
+        \[
+          \ddot{u}(t) + \frac{c}{m}\dot{u}(t) + \frac{k}{m}u(t) = \frac{f(t)}{m}
+        \]
+        </div>
+    </section>
+
+    <p>Le résultat obtenu est une équation différentielle d'ordre \(2\) dont les solutions générales sont homogènes + particulières : \(u(t) = u_h(t)+u_p(t)\) (car \( \ddot{u}(t) + \frac{c}{m}\dot{u}(t) + \frac{k}{m}u(t) \neq 0 \)) :</p>
+    <ul>
+        <li>« \(m \ddot{u}(t)\) » : Correspond à l'accélération de la masse « \(m\) »</li>
+        <li>« \(c\dot{u}(t)\) » : Est lié à la force de viscosité de l'amortisseur (supposée linéaire par rapport à sa vitesse) « \(\vec{F_c } = -c\dot{u}(t)\) »</li>
+        <li>« \(ku(t)\) » : Correspond à la force de rappel du ressort « \(\vec{F_k } = -ku(t)\) »</li>
+        <li>« \( \vec{F_e} = f(t) = F \cos(\omega t)\) » : Correspond à la force d'excitation (peut également être un sinus) (note : \( \omega \neq \omega_0 \)) </li>
+    </ul>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.1.2 : Équation d’un oscillateur harmonique en régime forcé</span>
+      </header>
+
+      <div class="math-box__body">
+        De la même manière que pour le régime libre, l'équation peut se réécrire sous la forme d'une équation d'un oscillateur harmonique :
+        <div class="math-eq">
+          \[
+          \ddot{u} + 2\,\zeta\,\omega_0\,\dot{u} + \omega_0^2\,u = \frac{f(t)}{m}
+          \qquad
+          \text{avec}
+          \qquad
+          \omega_0 = \sqrt{\frac{k}{m}}
+          \quad \text{et} \quad
+          \zeta = \frac{c}{2\sqrt{k m}}.
+          \]
+      </div>
+    </section>
+
+    <p>
+      Il existe plusieurs moyens de trouver la solution particulière \(u_p(t)\) de cette équation différentielle.
+    </p>
+
+    <p>
+      L’une des méthodes consiste à rechercher \(u_p(t)\) de la forme :
+    </p>
+
+    <p>
+      \[
+      u_p(t) =
+      \begin{cases}
+      U^p \cos(\omega t - \varphi),
+      & \text{si la force d’excitation est un cosinus} \\[6pt]
+      U^p \sin(\omega t - \varphi),
+      & \text{si la force d’excitation est un sinus}
+      \end{cases}
+      \qquad
+      \text{avec } U^p, \omega, \varphi \in \mathbb{R}
+      \]
+    </p>
+
+
+    <p>
+      S'il n'y a pas d'amortissement, donc que \(c=0\) (système conservatif) alors \(\varphi=0\) :
+    </p>
+
+    <p>
+      \[
+      u_p(t) =
+      \begin{cases}
+      U^p \cos(\omega t),
+      & \text{si la force d’excitation est un cosinus} \\[6pt]
+      U^p \sin(\omega t),
+      & \text{si la force d’excitation est un sinus}
+      \end{cases}
+      \qquad
+      \text{avec } U^p, \omega \in \mathbb{R}
+      \]
+    </p>
+
+    <p>
+      Pour simplifier les calculs, cette manière de procédé implique de passer de le domaine des complexes (\( \mathbb{R} \to \mathbb{C} \)) :
+    </p>
+
+    <p>
+      \[ 
+      \hat{u}_p = U^p e^{j(\omega t - \varphi)} = \hat{U}^p e^{j \omega t}
+      \qquad
+      \text{avec}
+      \qquad
+      \hat{U}^p = U^p e^{-j \varphi}
+      \]
+    </p>
+
+    <p>
+      \[
+      u^p =
+      \begin{cases}
+      \Re\!\left[\hat{u}^p\right]
+      & \text{si } u_p(t) = U^p \cos(\omega t - \varphi) \\[6pt]
+      \Im\!\left[\hat{u}^p\right]
+      & \text{si } u_p(t) = U^p \sin(\omega t - \varphi)
+      \end{cases}
+      \]
+    </p>
+
+    <p>
+      \(f(t)\) devient ainsi : \(\hat{f}(t)\) :
+    </p>
+
+    <p>
+      \[ 
+      \hat{f}(t) = F e^{j(\omega t)}
+      \]
+    </p>
+
+    <p>
+      On dérive \(\hat{u}_p\) une première fois et puis une seconde fois :
+    </p>
+
+    <p>
+      \[
+      \begin{cases}
+      \displaystyle
+      \dot{\hat{u}_p} = \frac{\mathrm{d}}{\mathrm{d}t} \left( \hat{U}^p e^{j \omega t} \right) = j \omega \hat{U}^p e^{j \omega t}, \\[10pt]
+      \displaystyle
+      \ddot{\hat{u}_p} = \frac{\mathrm{d}^2}{\mathrm{d}t^2}
+      \left( \hat{U}^p e^{j \omega t} \right)
+      = - \omega^2 \hat{U}^p e^{j \omega t}.
+      \end{cases}
+      \]
+    </p>
+
+    <p>
+      Puis, on injecte le résultat dans l'équation 1.4.2.1.2 :
+    </p>
+
+    <p>
+      \[
+      \ddot{\hat{u}} + 2 \zeta \omega_0 \dot{\hat{u}} + \omega_0^2 \hat{u} = \frac{F}{m} \, cos( \omega t)
+      \]
+      \[
+      \Downarrow
+      \]
+      \[
+      e^{j \omega t} \hat{U}^p (- \omega^2  + 2 \zeta \omega_0 j \omega + \omega_0^2) = \frac{F}{m} \, e^{j \omega t}
+      \]
+      \[
+      \hat{U}^p (- \omega^2  + 2 \zeta \omega_0 j \omega + \omega_0^2) = \frac{F}{m}
+      \]
+      \[
+      \hat{U}^p = \frac{\frac{F}{m}}{(- \omega^2  + 2 \zeta \omega_0 j \omega + \omega_0^2)}
+      \]
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.1.3 : Expression de l'amplitude complexe de la solution particulière en régime forcé</span>
+      </header>
+
+      <div class="math-box__body">
+        On trouve enfin une expression de l'amplitude complexe de la solution particulière \(\hat{U}^p\) :
+        <div class="math-eq">
+          \[
+          \hat{U}^p = \frac{\dfrac{F}{k}}{1 + 2 j \zeta \dfrac{\omega}{\omega_0} - \left(\dfrac{\omega}{\omega_0}\right)^2} = U^p e^{-j \varphi}
+          \]
+      </div>
+    </section>
+
+    <p>
+      L'objectif maintenant est de revenir dans le domaine des nombres réels (\( \mathbb{C} \to \mathbb{R} \)). 
+      Il nous reste donc à trouver \( \varphi \) et à passer \( U^p \to \mathbb{R} \) .
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.1.4 : Expression de \( U^p \to \mathbb{R} \) et de \(\varphi\)</span>
+      </header>
+
+      <div class="math-box__body">
+        De l'équation 1.4.2.1.3, on applique le module et l'argument sur \(\hat{U}^p\) pour obtenir les expressions recherchées :
+        <div class="math-eq">
+          \[
+          U^p = \left| \hat{U}^p \times e^{j \varphi} \right| = \frac{\dfrac{F}{k}}{\sqrt{ \left[ 1 - \left(\dfrac{\omega}{\omega_0}\right)^2 \right]^2 + \left( 2 \zeta \dfrac{\omega}{\omega_0} \right)^2}}
+          \]
+          \[
+          \varphi = - \arg\!\left(\hat{U}^p\right) = + \arctan\!\left(\frac{2 \zeta \dfrac{\omega}{\omega_0}}{1 - \left(\dfrac{\omega}{\omega_0}\right)^2} \right)
+          \]
+      </div>
+      Note : On prend \(- \arg\!\left(\hat{U}^p\right)\) car on a déjà considéré que \(\varphi\) est négatif.
+    </section>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.1.5 : Expression de la solution particulière \(u_p(t)\)</span>
+      </header>
+
+      <div class="math-box__body">
+        La solution particulière \(u_p(t)\) du système peut maintenant être obtenue :
+        <div class="math-eq">
+          \[
+          \begin{cases}
+          \text{si } u_p(t) = U^p \cos(\omega t - \varphi) = \frac{\dfrac{F}{k}}{\sqrt{ \left[ 1 - \left(\dfrac{\omega}{\omega_0}\right)^2 \right]^2 + \left( 2 \zeta \dfrac{\omega}{\omega_0} \right)^2}} \cos(\omega t - \arctan\!\left(\frac{2 \zeta \dfrac{\omega}{\omega_0}}{1 - \left(\dfrac{\omega}{\omega_0}\right)^2} \right)) \\[6pt]
+          \text{si } u_p(t) = U^p \sin(\omega t - \varphi) = \frac{\dfrac{F}{k}}{\sqrt{ \left[ 1 - \left(\dfrac{\omega}{\omega_0}\right)^2 \right]^2 + \left( 2 \zeta \dfrac{\omega}{\omega_0} \right)^2}} \sin(\omega t - \arctan\!\left(\frac{2 \zeta \dfrac{\omega}{\omega_0}}{1 - \left(\dfrac{\omega}{\omega_0}\right)^2} \right))
+          \end{cases}
+          \]
+      </div>
+    </section>
+
+    <p>
+      Il est maintenant possible de trouver la solution générale du système : \(u(t) = u_h(t)+u_p(t)\).
+    </p>
+
+    <p>
+      Il suffit de reprendre l'expression de \(u_h(t)\) (cf. Équation 1.4.1.5) et de \(u_p(t)\) toute juste calculée (cf. Équation 1.4.2.1.5 ).
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.1.6 : Expression de la solution générale \(u(t)\)</span>
+      </header>
+
+      <div class="math-box__body">
+        La solution générale \(u(t)\) s'écrit alors :
+        <div class="math-eq">
+          \[
+          \begin{cases}
+          u(t) = e^{-\zeta\,\omega_0 t} \left[ A \cos(\omega_d t) + B \sin(\omega_d t) \right] + U^p \cos(\omega t - \varphi) \qquad \text{si } u_p(t) = U^p \cos(\omega t - \varphi) \\[6pt]
+          u(t) = e^{-\zeta\,\omega_0 t} \left[ A \cos(\omega_d t) + B \sin(\omega_d t) \right] + U^p \sin(\omega t - \varphi) \qquad \text{si } u_p(t) = U^p \sin(\omega t - \varphi) \\[6pt]
+          \end{cases}
+          \]
+      </div>
+    </section>
+
+    <p>
+      Ensuite, il faut trouver \(A\) et \(B\) pour le biais des conditions initiales.
+    </p>
+
+    <p>
+      Pour cela, la procédure est exacte à celle réalisée précédement en régime libre.
+    </p>
+
+    
+    <p>
+      Les constantes \(A\) et \(B\) sont déterminées à partir des conditions initiales suivantes :
+    </p>
+
+    <p>
+      \[
+      \begin{cases}
+      u(0) = u_0 \\[6pt]
+      \dot{u}(0) = \dot{u}_0
+      \end{cases}
+      \]
+    </p>
+
+    <p>
+      On considère la solution générale du régime sous-amorti où \(u_p(t) = U^p \cos(\omega t - \varphi)\) (même principe si \(u_p(t) = U^p \sin(\omega t - \varphi)\)):
+    </p>
+
+    <p>
+      \[
+      u(t) = e^{-\zeta\,\omega_0 t} \left[ A \cos(\omega_d t) + B \sin(\omega_d t) \right] +  U^p \cos(\omega t - \varphi)
+      \]
+    </p>
+
+    <p>
+      En dérivant l’expression précédente, on obtient :
+    </p>
+
+    <p>
+      \[
+      \dot{u}(t) = e^{-\zeta\,\omega_0 t} \left[ -\zeta\,\omega_0 \bigl(A \cos(\omega_d t) + B \sin(\omega_d t)\bigr) - A \omega_d \sin(\omega_d t) + B \omega_d \cos(\omega_d t) \right] - U^p \omega \sin(\omega t - \varphi)
+      \]
+    </p>
+
+    <p>
+      En évaluant ces expressions à l’instant initial \(t = 0\), il vient :
+    </p>
+
+    <p>
+      \[
+      \begin{cases}
+      u(0) = A + U^p \cos(-\varphi) = u_0 \\[6pt]
+      \dot{u}(0) = -\zeta\,\omega_0 A + \omega_d B - U^p \omega \sin(-\varphi) = \dot{u}_0
+      \end{cases}
+      \]
+    </p>
+
+    <p>
+      On en déduit les constantes d’intégration :
+    </p>
+
+    <p>
+      \[
+      \begin{cases}
+      A = u_0 - U^p \cos(\varphi) \\[8pt]
+      B = \frac{\dot u_0 + \zeta \omega_0 u_0 - U^P\left(\zeta \omega_0 \cos\varphi + \omega \sin\varphi\right)}{\omega_d}
+      \end{cases}
+      \]
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.1.7 : Solution d’un oscillateur harmonique en régime sous-amorti excité par une force</span>
+      </header>
+
+      <div class="math-box__body">
+        Ce qui nous donne l'unique solution si \(f(t) = F \cos(\omega t)\) :
+        <div class="math-eq">
+          \[
+          u(t) = e^{-\zeta\,\omega_0 t} \left[ (u_0 - U^p \cos(\varphi) ) \cos(\omega_d t) + \frac{\dot u_0 + \zeta \omega_0 u_0 - U^P\left(\zeta \omega_0 \cos\varphi + \omega \sin\varphi\right)}{\omega_d} \sin(\omega_d t) \right] +  U^p \cos(\omega t - \varphi)
+          \]
+        </div>
+      </div>
+    </section>
+
+    <section class="graph-box is-plot">
+      <header class="graph-box__header">
+        <span class="graph-box__title">
+          Graphique 1.4.2.1.1 — Lié à l'équation 1.4.2.1.7
+        </span>
+      </header>
+
+      <div class="graph-box__body">
+        <div class="graph-frame">
+          <div class="graph-embed">
+            <iframe src="plots/regime_force_force_plot.html" loading="lazy"></iframe>
+          </div>
+          <div class="graph-caption">
+            Réponse d'un oscillateur harmonique en régime sous-amorti
+          </div>
+          Note : \( |u_h(t)| = e^{-\zeta \, \omega_0 \, t} \sqrt{(u_0 - U^p \cos(\varphi) )^{2}+(\frac{\dot u_0 + \zeta \omega_0 u_0 - U^P\left(\zeta \omega_0 \cos\varphi + \omega \sin\varphi\right)}{\omega_d})^{2}} \)
+        </div>
+      </div>
+    </section>
+
+    <h4>
+      Étude fréquentielle du système forcé par une force imposée sur la masse :
+    </h4>
+
+    <p>
+      L’étude fréquentielle d’un système joue un rôle fondamental, car elle permet d’analyser le comportement du modèle en fonction de la fréquence de l’excitation qui lui est appliquée.
+      Contrairement à l’étude temporelle, qui décrit une évolution physique de la structure au cours du temps, l’étude fréquentielle met en évidence la manière dont le système amplifie, atténue ou déphase un signal selon sa fréquence.
+      Cette analyse est particulièrement importante pour identifier le phénomène de résonance (cf. Définition 1.1).
+    </p>
+
+    <p>
+      Cette nouvelle partie se fait par l'introduction d'un nouveau terme \( \beta \) décrivant le comportement fréquentielle du modèle.
+    </p>
+
+    <p>
+      Il s'obtient en séparant \( U^p \) en deux parties :
+    </p>
+
+    <p>
+      \[
+      U^p = U^{st} \times |\beta|
+      \qquad
+      \text{avec}
+      \qquad
+      U^{st} = \frac{F}{k}
+      \]
+    </p>
+
+    <p>
+      \( U^{st} \) représente l'amplitude stationnaire du système. Ce terme n'a que très peu d'importance.
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.1.8 : Expression de \(\beta\) et \(|\beta|\)</span>
+      </header>
+
+      <div class="math-box__body">
+        De l'équation 1.4.2.1.3, on introduit l'expression de \(\beta\) et \(|\beta|\) :
+        <div class="math-eq">
+          \[
+          \beta (\dfrac{\omega}{\omega_0}) = \frac{1}{1 + 2 j \zeta \dfrac{\omega}{\omega_0} - \left(\dfrac{\omega}{\omega_0}\right)^2}
+          \qquad
+          |\beta (\dfrac{\omega}{\omega_0})| = \frac{1}{\sqrt{\left[1 - \left(\dfrac{\omega}{\omega_0}\right)^2\right]^2 + \left(2 \zeta \dfrac{\omega}{\omega_0}\right)^2}}
+          \]
+      </div>
+    </section>
+
+    <section class="graph-box is-plot">
+      <header class="graph-box__header">
+        <span class="graph-box__title">
+          Graphique 1.4.2.1.2 — Lié à l'équation 1.4.2.1.8
+        </span>
+      </header>
+
+      <div class="graph-box__body">
+        <div class="graph-frame">
+          <div class="graph-embed">
+            <iframe src="plots/regime_force_force_beta_plot.html" loading="lazy"></iframe>
+          </div>
+          <div class="graph-caption">
+            Réponse d'un fréquentielle de \(|\beta|\)
+          </div>
+          <p>
+            Interprétation du graphique : Plus \(\zeta\) est petit, plus la fréquence de résonnance est élevée. Lorsque le système est conservatif donc \(\zeta = 0\), \(|\beta| \to +\infty\) à la fréquence de résonance. L'ajout d'un amortisseur au système permet donc d'éviter qu'il s'emballe.
+          </p>
+        </div>
+      </div>
+    </section>
+
+
+
+    <p>
+      La fréquence de résonance se détermine lorsque \(|\beta|\) est maximum, donc lorsque son dénominateur est minimum. 
+      Pour trouver le minimum d'une fonction, il est nécessaire de la dérivée et de l'évaluer lorsqu'elle est égale à 0.
+    </p>
+
+    <p>
+      On pose :
+    </p>
+
+    <p>
+      \[ \Omega = (\dfrac{\omega}{\omega_0})^2 \]
+      \[ \frac{\partial}{\partial \Omega} (\left(1 - \Omega\right)^2 + \left(4 \zeta^2 \Omega\right)) = 0 \]
+      \[ -2(1 - \Omega) + 4 \zeta^2 = 0 \]
+      \[ (1 - \Omega) - 2 \zeta^2 = 0 \]
+      \[ - \Omega = 2 \zeta^2 - 1 \]
+      \[ \Omega^{re} = 1 - 2 \zeta^2\]
+      \[ (\dfrac{\omega^{re}}{\omega_0})^2 = 1- 2 \zeta^2\]
+      \[ \dfrac{\omega^{re}}{\omega_0} = \sqrt{1- 2 \zeta^2} \]
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.1.9 : Expression de \(\omega^{re}\) et \(f^{re}\)</span>
+      </header>
+
+      <div class="math-box__body">
+        De part la démonstration précédente, on introduit l'expression de la pulsation et fréquence de résonance \(\omega^{re}\) et \(f^{re}\) :
+        <div class="math-eq">
+          \[
+          \omega^{re} (\frac{rad}{s}) = \omega_0 \sqrt{1- 2 \zeta^2}
+          \qquad
+          f^{re} (Hz) = f_0 \sqrt{1- 2 \zeta^2}
+          \]
+      </div>
+    </section>
+
+    <p>
+      La valeur maximale de \(|\beta|(\dfrac{\omega}{\omega_0})\) est ainsi obtenue en introduisant le terme \(\Omega^{re}\) dans l'équation 1.4.2.1.8 :
+    </p>
+
+    <p>
+      \[ 
+      \max(\beta)=|\beta (\Omega^{re})| = \frac{1}{\sqrt{\left(1 - \Omega^{re}\right)^2 + \left(2 \zeta \right)^2\Omega^{re}}}
+      = \frac{1}{\sqrt{\left(1 - (1 - 2 \zeta^2)\right)^2 + \left(2 \zeta \right)^2(1 - 2 \zeta^2)}}
+      \]
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.1.10 : Expression de \(\max(\beta)\)</span>
+      </header>
+
+      <div class="math-box__body">
+        Après developpement et factorisation, on trouve l'expression :
+        <div class="math-eq">
+          \[
+          \max(\beta) = \frac{1}{2 \zeta \sqrt{1-\zeta^2}}
+          \]
+      </div>
+    </section>
+
+    <p>
+      L'expression de la fréquence de résonnance a été prouvée (cf. Équation 1.4.2.1.9), mais physiquement à quoi correspond un phénomène de résonnance ?
+    </p>
+    
+    <p>
+      Pour répondre à cette question, il faut revenir à l'expression de la solution particulière \(u_p(t)\) (cf. Équation 1.4.2.1.5).
+    </p>
+
+    <p>
+      \(u_p(t)\) s'exprime aussi comme étant le régime stationnaire. La solution homogène \(u_h(t)\) est connue comme étant le régime transitoire du modèle physique.
+      Comme elle est caractérisée par une exponentielle décroissance, elle disparait lorsque \(t \to +\infty\).
+      \[
+      \lim_{t \to +\infty} u_h(t) = 0
+      \]
+      En \(t \to +\infty\), il ne reste donc plus que le régime stationnaire décrit par \(u_p(t) = U^p \cos(\omega t - \varphi)\) (cf. Équation 1.4.2.1.5).
+      \[
+      \lim_{t \to +\infty} u(t) = \lim_{t \to +\infty} (u_h(t) + u_p(t)) = 0 + \lim_{t \to +\infty} u_p(t)
+      \]
+    </p>
+
+    <p>
+      Le terme \(\cos(\omega t - \varphi)\) ne peut varier qu'entre \(-1\) et \(1\), peu importe la valeur de \(\omega t - \varphi\). C'est la définition même du cosinus.
+      L'élément qui pourrait rendre le système instable, c'est l'évaluation de l'amplitude \(U^p = U^{st} |\beta|\). \(U^{st}\) est une constante, il ne reste que le terme \(|\beta(\dfrac{\omega}{\omega_0})|\).
+    </p>
+
+    <p>
+      Si \(|\beta(\dfrac{\omega}{\omega_0})| \to +\infty \) alors \(U^p \to +\infty\) et donc \(u_p(t) \to +\infty\) également, ce qui correspond à un emballement du système. 
+    </p>
+    <p>
+      Il est important de rappeller que les valeurs de \(u(t)\), \(u_h(t)\) et \(u_p(t)\) expriment des déplacements (en m ou mm). 
+      Il est ainsi facile de comprendre qu'un déplacement de plusieurs mètres entraînerait de terribles conséquences sur le système.
+    </p>
+
+    <p>
+      Heureusement, l'ajout d'un amortisseur permet d'éviter que \(|\beta(\dfrac{\omega}{\omega_0})| \to +\infty \) et donc garentit une stabilité du modèle.
+    </p>
+
+    <section class="math-box is-theorem">
+      <header class="math-box__header">
+        <span class="math-box__title">Condition d'instabilité</span>
+      </header>
+
+      <div class="math-box__body">
+        Pour que \(|\beta(\dfrac{\omega}{\omega_0})|\) tende vers l'infini positif, la pulsation de la force d'excitation \(\omega\) doit tendre vers \(\omega^{re}\) et le système doit être conservatif :
+        <div class="math-eq">
+          \[
+          |\beta(\dfrac{\omega}{\omega_0})| \underset{\omega \to \omega^{re}}{\longrightarrow} +\infty \qquad \text{si et seulement si : } c=0
+          \]
+        </div>
+        En dehors de cette fréquence critique, le modèle est stable.
+      </div>
+    </section>
+
+    <p>
+      Remarque : Cette partie se concentre sur les systèmes à \(1\) \(ddl\) dont la fréquence de résonnance est unique. Pour d'autres systèmes conditionnés à \(n\) \(ddl\), il peut y avoir jusqu'à \(n\) fréquences de résonnance.
+    </p>
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <h5>1.4.2.2 Excitation par déplacement imposé</h5>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.2.1 : Équation du mouvement d'un système soumis à un déplacement imposé</span>
+      </header>
+
+      <div class="math-box__body">
+        On considère un axe « \(u\) » et on applique le Principe Fondamental de la Dynamique (PFD) :
+        <div class="math-eq">
+        \[
+        \sum \vec{F} = m \vec{a}\ 
+        \]
+        \[
+        \vec{F_k } + \vec{F_c } + \vec{F_e} = m \vec{a}\ 
+        \]
+        \[
+          \Downarrow
+        \]
+        \[
+          m \ddot{u}(t) = - ku(t) + ku^{gr}(t) - c\dot{u}(t) + c\dot{u}^{gr}(t)
+        \]
+        \[
+          m \ddot{u}(t) + c\dot{u}(t) + ku(t) = ku^{gr}(t) + c\dot{u}^{gr}(t)
+        \]
+        </div>
+    </section>
+
+    <p>Le résultat obtenu est une équation différentielle d'ordre \(2\) dont les solutions générales sont homogènes + particulières : \(u(t) = u_h(t)+u_p(t)\) (car \( \neq 0 \)) :</p>
+    <ul>
+        <li>« \(m \ddot{u}(t)\) » : Correspond à l'accélération de la masse « \(m\) »</li>
+        <li>« \(c\dot{u}(t)\) » : Est lié à la force de viscosité de l'amortisseur (supposée linéaire par rapport à sa vitesse) « \(\vec{F_c } = -c\dot{u}(t)\) »</li>
+        <li>« \(ku(t)\) » : Correspond à la force de rappel du ressort « \(\vec{F_k } = -ku(t)\) »</li>
+        <li>« \(\vec{F_e} = ku^{gr}(t) + c\dot{u}^{gr}(t) \) avec \( u^{gr}(t) = U^{gr} \cos(\omega t)\) » : Correspond à la force d'excitation (peut également être un sinus) (note : \( \omega \neq \omega_0 \)) </li>
+    </ul>
+
+    <p>
+      Il faut retravailler l'expression ci-dessus, car elle est compliquée à résoudre telle quelle. Pour cela, la méthode la plus simple est d'effectuer un changement de variable.
+    </p>
+
+    <p>
+      On pose :
+      \[
+      v(t) = u(t) - u^{gr}(t)
+      \]
+      \[
+      \Downarrow
+      \]
+      \[
+      m \ddot{u}(t) + c(\dot{u}(t) - \dot{u}^{gr}(t)) + k(u(t) - u^{gr}(t)) = 0
+      \]
+      \[
+      m (\ddot{v}(t) + \ddot{u}^{gr}(t)) + c\dot{v}(t) + kv(t) = 0
+      \]
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.2.2 : Équation du mouvement retravaillée d'un système soumis à un déplacement imposé</span>
+      </header>
+
+      <div class="math-box__body">
+        Voici la forme de l'équation du mouvement après avoir effectué le changement de variable \(v(t) = u(t) - u^{gr}(t)\) :
+        <div class="math-eq">
+        \[
+          m \ddot{v}(t) + c\dot{v}(t) + kv(t) = - m \ddot{u}^{gr}(t)
+        \]
+        </div>
+    </section>
+
+    <p>
+      \(u^{gr}\) est la forme \(U^{gr} \cos(\omega t)\) donc sa dérivée seconde vaut \(\ddot{u}^{gr}(t) = - \omega^2 U^{gr} \cos(\omega t)\).
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.2.3 : Équation d’un oscillateur harmonique en régime forcé</span>
+      </header>
+
+      <div class="math-box__body">
+        De la même manière que pour le régime libre, l'équation peut se réécrire sous la forme d'une équation d'un oscillateur harmonique :
+        <div class="math-eq">
+          \[
+          \ddot{v} + 2\,\zeta\,\omega_0\,\dot{v} + \omega_0^2\,v = - \ddot{u}^{gr}(t)
+          \qquad
+          \text{avec}
+          \qquad
+          \omega_0 = \sqrt{\frac{k}{m}}
+          \quad \text{et} \quad
+          \zeta = \frac{c}{2\sqrt{k m}}.
+          \]
+      </div>
+    </section>
+
+    <p>
+      Pour résoudre cette équation différentielle, il faut procéder de la même manière que la méthode présentée pour le cas d'un système excité par une force (cf. 1.4.2.1 Excitation par force imposée).
+    </p>
+
+    <p>
+      Il faut seulement trouver la solution particulière \(v_p(t)\) car la solution homogène \(v_h(t)= u(t)\) en régime libre.
+    </p>
+
+    <p>
+      On recherche \(v_p(t)\) de la forme :
+    </p>
+
+    <p>
+      \[
+      v_p(t) =
+      \begin{cases}
+      V^p \cos(\omega t - \varphi),
+      & \text{si la force d’excitation est un cosinus} \\[6pt]
+      V^p \sin(\omega t - \varphi),
+      & \text{si la force d’excitation est un sinus}
+      \end{cases}
+      \qquad
+      \text{avec } V^p, \omega, \varphi \in \mathbb{R}
+      \]
+    </p>
+
+
+    <p>
+      S'il n'y a pas d'amortissement, donc que \(c=0\) (système conservatif) alors \(\varphi=0\) :
+    </p>
+
+    <p>
+      \[
+      v_p(t) =
+      \begin{cases}
+      V^p \cos(\omega t),
+      & \text{si la force d’excitation est un cosinus} \\[6pt]
+      V^p \sin(\omega t),
+      & \text{si la force d’excitation est un sinus}
+      \end{cases}
+      \qquad
+      \text{avec } V^p, \omega \in \mathbb{R}
+      \]
+    </p>
+
+    <p>
+      Pour simplifier les calculs, cette manière de procédé implique de passer de le domaine des complexes (\( \mathbb{R} \to \mathbb{C} \)) :
+    </p>
+
+    <p>
+      \[ 
+      \hat{v}_p = V^p e^{j(\omega t - \varphi)} = \hat{V}^p e^{j \omega t}
+      \qquad
+      \text{avec}
+      \qquad
+      \hat{V}^p = V^p e^{-j \varphi}
+      \]
+    </p>
+
+    <p>
+      \[
+      v^p =
+      \begin{cases}
+      \Re\!\left[\hat{v}^p\right]
+      & \text{si } v_p(t) = V^p \cos(\omega t - \varphi) \\[6pt]
+      \Im\!\left[\hat{v}^p\right]
+      & \text{si } v_p(t) = V^p \sin(\omega t - \varphi)
+      \end{cases}
+      \]
+    </p>
+
+    <p>
+      \(u^{gr}(t)\) devient ainsi : \(\hat{u}^{gr}(t)\) :
+    </p>
+
+    <p>
+      \[ 
+      \hat{u}^{gr}(t) = U^{gr} e^{j(\omega t)}
+      \text{et}
+      \qquad
+      \ddot{\hat{u}}^{gr}(t) = - \omega^2 U^{gr} e^{j(\omega t)}
+      \]
+    </p>
+
+    <p>
+      On dérive \(\hat{u}_p\) une première fois et puis une seconde fois :
+    </p>
+
+    <p>
+      \[
+      \begin{cases}
+      \displaystyle
+      \dot{\hat{v}}_p = \frac{\mathrm{d}}{\mathrm{d}t} \left( \hat{V}^p e^{j \omega t} \right) = j \omega \hat{V}^p e^{j \omega t}, \\[10pt]
+      \displaystyle
+      \ddot{\hat{v}}_p = \frac{\mathrm{d}^2}{\mathrm{d}t^2} \left( \hat{V}^p e^{j \omega t} \right) = - \omega^2 \hat{V}^p e^{j \omega t}.
+      \end{cases}
+      \]
+    </p>
+
+    <p>
+      Puis, on injecte le résultat dans l'équation 1.4.2.2.3 :
+    </p>
+
+    <p>
+      \[
+      \ddot{\hat{v}} + 2 \zeta \omega_0 \dot{\hat{v}} + \omega_0^2 \hat{v} = \omega^2 U^{gr} e^{j(\omega t)}
+      \]
+      \[
+      \Downarrow
+      \]
+      \[
+      e^{j \omega t} \hat{V}^p (- \omega^2  + 2 \zeta \omega_0 j \omega + \omega_0^2) = U^{gr} \omega^2 \, e^{j \omega t}
+      \]
+      \[
+      \hat{V}^p (- \omega^2  + 2 \zeta \omega_0 j \omega + \omega_0^2) = U^{gr} \omega^2
+      \]
+      \[
+      \hat{V}^p = \frac{U^{gr} \omega^2}{(- \omega^2  + 2 \zeta \omega_0 j \omega + \omega_0^2)}
+      \]
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.2.4 : Expression de l'amplitude complexe de la solution particulière en régime forcé</span>
+      </header>
+
+      <div class="math-box__body">
+        On trouve enfin une expression de l'amplitude complexe de la solution particulière \(\hat{V}^p\) :
+        <div class="math-eq">
+          \[
+          \hat{V}^p = \frac{U^{gr} \frac{\omega^2}{\omega_0^2}}{1 + 2 j \zeta \dfrac{\omega}{\omega_0} - \left(\dfrac{\omega}{\omega_0}\right)^2} = V^p e^{-j \varphi}
+          \]
+      </div>
+    </section>
+
+    <p>
+      L'objectif maintenant est de revenir dans le domaine des nombres réels (\( \mathbb{C} \to \mathbb{R} \)). 
+      Il nous reste donc à trouver \( \varphi \) et à passer \( V^p \to \mathbb{R} \) .
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.2.5 : Expression de \( V^p \to \mathbb{R} \) et de \(\varphi\)</span>
+      </header>
+
+      <div class="math-box__body">
+        De l'équation 1.4.2.1.3, on applique le module et l'argument sur \(\hat{V}^p\) pour obtenir les expressions recherchées :
+        <div class="math-eq">
+          \[
+          V^p = \left| \hat{V}^p \times e^{j \varphi} \right| = \frac{U^{gr} \frac{\omega^2}{\omega_0^2}}{\sqrt{ \left[ 1 - \left(\dfrac{\omega}{\omega_0}\right)^2 \right]^2 + \left( 2 \zeta \dfrac{\omega}{\omega_0} \right)^2}}
+          \]
+          \[
+          \varphi = - \arg\!\left(\hat{V}^p\right) = + \arctan\!\left(\frac{2 \zeta \dfrac{\omega}{\omega_0}}{1 - \left(\dfrac{\omega}{\omega_0}\right)^2} \right)
+          \]
+      </div>
+      Note : On prend \(- \arg\!\left(\hat{V}^p\right)\) car on a déjà considéré que \(\varphi\) est négatif.
+    </section>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.2.6 : Expression de la solution particulière \(v_p(t)\)</span>
+      </header>
+
+      <div class="math-box__body">
+        La solution particulière \(v_p(t)\) du système peut maintenant être obtenue :
+        <div class="math-eq">
+          \[
+          \begin{cases}
+          \text{si } v_p(t) = V^p \cos(\omega t - \varphi) = \frac{U^{gr} \frac{\omega^2}{\omega_0^2}}{\sqrt{ \left[ 1 - \left(\dfrac{\omega}{\omega_0}\right)^2 \right]^2 + \left( 2 \zeta \dfrac{\omega}{\omega_0} \right)^2}} \cos(\omega t - \arctan\!\left(\frac{2 \zeta \dfrac{\omega}{\omega_0}}{1 - \left(\dfrac{\omega}{\omega_0}\right)^2} \right)) \\[6pt]
+          \text{si } v_p(t) = V^p \sin(\omega t - \varphi) = \frac{U^{gr} \frac{\omega^2}{\omega_0^2}}{\sqrt{ \left[ 1 - \left(\dfrac{\omega}{\omega_0}\right)^2 \right]^2 + \left( 2 \zeta \dfrac{\omega}{\omega_0} \right)^2}} \sin(\omega t - \arctan\!\left(\frac{2 \zeta \dfrac{\omega}{\omega_0}}{1 - \left(\dfrac{\omega}{\omega_0}\right)^2} \right))
+          \end{cases}
+          \]
+      </div>
+    </section>
+
+
+    <p>
+      Il est maintenant possible de trouver la solution générale du système : \(v(t) = v_h(t)+v_p(t)\).
+    </p>
+
+    <p>
+      Il suffit de reprendre l'expression de \(u_h(t)\) (cf. Équation 1.4.1.5) et de \(u_p(t)\) toute juste calculée (cf. Équation 1.4.2.1.5 ).
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.2.7 : Expression de la solution générale \(v(t)\)</span>
+      </header>
+
+      <div class="math-box__body">
+        La solution générale \(v(t)\) s'écrit alors :
+        <div class="math-eq">
+          \[
+          \begin{cases}
+          v(t) = e^{-\zeta\,\omega_0 t} \left[ A \cos(\omega_d t) + B \sin(\omega_d t) \right] + V^p \cos(\omega t - \varphi) \qquad \text{si } v_p(t) = V^p \cos(\omega t - \varphi) \\[6pt]
+          v(t) = e^{-\zeta\,\omega_0 t} \left[ A \cos(\omega_d t) + B \sin(\omega_d t) \right] + V^p \sin(\omega t - \varphi) \qquad \text{si } v_p(t) = V^p \sin(\omega t - \varphi) \\[6pt]
+          \end{cases}
+          \]
+      </div>
+    </section>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.2.8 : Expression de la solution générale \(u(t)\)</span>
+      </header>
+
+      <div class="math-box__body">
+        La solution générale \(u(t) = v(t) + u^{gr}(t) = v_h(t)+v_p(t) + u^{gr}(t)\) s'exprime alors :
+        <div class="math-eq">
+          \[
+          \begin{cases}
+          u(t) = e^{-\zeta\,\omega_0 t} \left[ A \cos(\omega_d t) + B \sin(\omega_d t) \right] + V^p \cos(\omega t - \varphi) + U^{gr} \cos(\omega t) \qquad \text{si } v_p(t) = V^p \cos(\omega t - \varphi) \\[6pt]
+          u(t) = e^{-\zeta\,\omega_0 t} \left[ A \cos(\omega_d t) + B \sin(\omega_d t) \right] + V^p \sin(\omega t - \varphi) + U^{gr} \sin(\omega t) \qquad \text{si } v_p(t) = V^p \sin(\omega t - \varphi) \\[6pt]
+          \end{cases}
+          \]
+      </div>
+    </section>
+
+    <p>
+      Ensuite, il faut trouver les constantes \(A\) et \(B\). Elles sont déterminées à partir des conditions initiales suivantes :
+    </p>
+
+    <p>
+    \[
+    \begin{cases}
+    u(0) = u_0 \\[6pt]
+    \dot{u}(0) = \dot{u}_0
+    \end{cases}
+    \]
+    </p>
+
+    <p>
+      On considère la solution générale, avec une excitation \(v_p(t) = V^p \cos(\omega t - \varphi)\) mais la procédure est la même avec un sinus :
+    </p>
+
+    <p>
+    \[
+    u(t) =
+    e^{-\zeta\,\omega_0 t}
+    \left[
+    A \cos(\omega_d t) + B \sin(\omega_d t)
+    \right]
+    + V^p \cos(\omega t - \varphi)
+    + U^{gr}\cos(\omega t)
+    \]
+    </p>
+
+    <p>
+      En dérivant l’expression précédente, on obtient :
+    </p>
+
+    <p>
+    \[
+    \dot{u}(t) =
+    e^{-\zeta\,\omega_0 t}
+    \left[
+    -\zeta\,\omega_0 \bigl(A \cos(\omega_d t) + B \sin(\omega_d t)\bigr)
+    - A \omega_d \sin(\omega_d t)
+    + B \omega_d \cos(\omega_d t)
+    \right]
+    - V^p \omega \sin(\omega t - \varphi)
+    \]
+    </p>
+
+    <p>
+      En évaluant ces expressions à l’instant initial \(t = 0\), il vient :
+    </p>
+
+    <p>
+    \[
+    \begin{cases}
+    u(0) = A + V^p \cos(-\varphi) + U^{gr} = u_0 \\[8pt]
+    \dot{u}(0) = -\zeta\,\omega_0 A + \omega_d B - V^p \omega \sin(-\varphi) = \dot{u}_0
+    \end{cases}
+    \]
+    </p>
+
+    <p>
+      En utilisant les identités trigonométriques
+      \(\cos(-\varphi)=\cos(\varphi)\) et
+      \(\sin(-\varphi)=-\sin(\varphi)\), on en déduit les constantes d’intégration :
+    </p>
+
+    <p>
+    \[
+    \begin{cases}
+    A = u_0 - V^p \cos(\varphi) - U^{gr} \\[10pt]
+    B = \displaystyle \frac{ \dot u_0 + \zeta \omega_0 (u_0  - U^{gr}) - V^p(\zeta \omega_0 \cos(\varphi) + \omega \sin(\varphi)) }{\omega_d}
+    \end{cases}
+    \]
+    </p>
+
+
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.2.9 : Solution d’un oscillateur harmonique en régime sous-amorti excité par une force</span>
+      </header>
+
+      <div class="math-box__body">
+        Ce qui nous donne l'unique solution si \(u^{gr}(t) = U^{gr} \cos(\omega t)\) :
+        <div class="math-eq">
+          \[
+          u(t) = e^{-\zeta\,\omega_0 t} \left[ (u_0 - V^p \cos(\varphi) - U^{gr} ) \cos(\omega_d t) + \frac{ \dot u_0 + \zeta \omega_0 (u_0  - U^{gr}) - V^p(\zeta \omega_0 \cos(\varphi) + \omega \sin(\varphi)) }{\omega_d} \sin(\omega_d t) \right] +  V^p \cos(\omega t - \varphi) + U^{gr} \cos(\omega t)
+          \]
+        </div>
+      </div>
+    </section>
+
+    <section class="graph-box is-plot">
+      <header class="graph-box__header">
+        <span class="graph-box__title">
+          Graphique 1.4.2.2.1 — Lié à l'équation 1.4.2.1.9
+        </span>
+      </header>
+
+      <div class="graph-box__body">
+        <div class="graph-frame">
+          <div class="graph-embed">
+            <iframe src="plots/regime_force_bati_plot.html" loading="lazy"></iframe>
+          </div>
+          <div class="graph-caption">
+            Réponse d'un oscillateur harmonique par déplacement imposé en régime sous-amorti
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
+
+    <h4>
+      Étude fréquentielle du système forcé en déplacement :
+    </h4>
+
+    <p>
+      L'analyse fréquentielle se fait de la même manière que pour un système forcé par une force sur la masse.
+    </p>
+
+    <p>
+      On introduit un nouveau terme \( \beta \) qui décrit le comportement fréquentielle du modèle.
+    </p>
+
+    <p>
+      Il s'obtient en séparant \( V^p \) en deux parties :
+    </p>
+
+    <p>
+      \[
+      V^p = V^{st} \times |\beta|
+      \qquad
+      \text{avec}
+      \qquad
+      V^{st} = U^{gr}
+      \]
+    </p>
+
+    <p>
+      \( V^{st} \) représente l'amplitude stationnaire du système. Ce terme n'a que très peu d'importance.
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.2.10 : Expression de \(\beta\) et \(|\beta|\)</span>
+      </header>
+
+      <div class="math-box__body">
+        De l'équation 1.4.2.2.5, on introduit l'expression de \(\beta\) et \(|\beta|\) :
+        <div class="math-eq">
+          \[
+          \beta (\dfrac{\omega}{\omega_0}) = \frac{\dfrac{\omega}{\omega_0}^2}{1 + 2 j \zeta \dfrac{\omega}{\omega_0} - \left(\dfrac{\omega}{\omega_0}\right)^2}
+          \qquad
+          |\beta (\dfrac{\omega}{\omega_0})| = \frac{\dfrac{\omega}{\omega_0}^2}{\sqrt{\left[1 - \left(\dfrac{\omega}{\omega_0}\right)^2\right]^2 + \left(2 \zeta \dfrac{\omega}{\omega_0}\right)^2}}
+          \]
+      </div>
+    </section>
+
+    <section class="graph-box is-plot">
+      <header class="graph-box__header">
+        <span class="graph-box__title">
+          Graphique 1.4.2.1.2 — Lié à l'équation 1.4.2.1.8
+        </span>
+      </header>
+
+      <div class="graph-box__body">
+        <div class="graph-frame">
+          <div class="graph-embed">
+            <iframe src="plots/regime_force_bati_beta_plot.html" loading="lazy"></iframe>
+          </div>
+          <div class="graph-caption">
+            Réponse d'un fréquentielle de \(|\beta|\)
+          </div>
+        </div>
+          <p>
+            Interprétation du graphique : Plus \(\zeta\) est petit, plus la fréquence de résonnance est élevée. Lorsque le système est conservatif donc \(\zeta = 0\), \(|\beta| \to +\infty\) à la fréquence de résonance. L'ajout d'un amortisseur au système permet donc d'éviter qu'il s'emballe.
+          </p>
+      </div>
+    </section>
+
+    <p>
+      La fréquence de résonance se détermine lorsque \(|\beta|\) est maximum, donc lorsque son dénominateur est minimum. 
+      Pour trouver le minimum d'une fonction, il est nécessaire de la dérivée et de l'évaluer lorsqu'elle est égale à 0.
+    </p>
+
+    <p>
+      On pose :
+    </p>
+
+    <p>
+      \[ \Omega = (\dfrac{\omega}{\omega_0})^2 \]
+      \[ \frac{\partial}{\partial \Omega} (\frac{\Omega} {\sqrt{(\left(1 - \Omega\right)^2 + \left(4 \zeta^2 \Omega\right))}}) = 0 \]
+      \[ A(\Omega) = \left(1 - \Omega\right)^2 + \left(4 \zeta^2 \Omega\right) \]
+      \[ \frac{\partial}{\partial \Omega} (A(\Omega)^{-\frac{1}{2}}\Omega) = 0 \]
+      \[ A(\Omega)^{-\frac{1}{2}} - \frac{\Omega}{2} A(\Omega)^{-\frac{3}{2}}A'(\Omega) = 0 \]
+      \[ 2 A(\Omega) = \Omega A'(\Omega) \]
+      \[ 2 ((1 - \Omega)^2 + (4 \zeta^2 \Omega)) = \Omega (-2 (1 - \Omega) + 4 \zeta^2 ) \]
+      \[ 2 (1 - 2 \Omega + \Omega^2 + (4 \zeta^2 \Omega)) = -2 (\Omega - \Omega^2 - 2 \zeta^2 \Omega ) \]
+      \[ (1 - 2 \Omega + \Omega^2 + (4 \zeta^2 \Omega)) = (-\Omega + \Omega^2 + 2 \zeta^2 \Omega ) \]
+      \[ (1 - \Omega + (4 \zeta^2 \Omega)) = ( + 2 \zeta^2 \Omega ) \]
+      \[ 1 = - 2 \zeta^2 \Omega + \Omega \]
+      \[ 1 = \Omega ( 1 - 2 \zeta^2) \]
+
+      \[ \Omega^{re} = \frac{1}{1 - 2 \zeta^2}\]
+
+      \[ (\dfrac{\omega^{re}}{\omega_0})^2 = \frac{1}{1 - 2 \zeta^2}\]
+      \[ \dfrac{\omega^{re}}{\omega_0} = \frac{1}{\sqrt{1 - 2 \zeta^2}} \]
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.1.9 : Expression de \(\omega^{re}\) et \(f^{re}\)</span>
+      </header>
+
+      <div class="math-box__body">
+        De part la démonstration précédente, on introduit l'expression de la pulsation et fréquence de résonance \(\omega^{re}\) et \(f^{re}\) :
+        <div class="math-eq">
+          \[
+          \omega^{re} (\frac{rad}{s}) = \frac{\omega_0}{\sqrt{1 - 2 \zeta^2}}
+          \qquad
+          f^{re} (Hz) = \frac{f_0}{\sqrt{1 - 2 \zeta^2}}
+          \]
+      </div>
+    </section>
+
+    <p>
+      La valeur maximale de \(|\beta|(\dfrac{\omega}{\omega_0})\) est ainsi obtenue en introduisant le terme \(\Omega^{re}\) dans l'équation 1.4.2.2.10 :
+    </p>
+
+    <p>
+      \[ 
+      \max(\beta)=|\beta (\Omega^{re})| = \frac{\Omega^{re}}{\sqrt{\left(1 - \Omega^{re}\right)^2 + \left(2 \zeta \right)^2\Omega^{re}}}
+      = \frac{\frac{1}{(1 - 2 \zeta^2)}}{\sqrt{(1 -  \frac{1}{(1 - 2 \zeta^2)})^2 + \left(2 \zeta \right)^2\frac{1}{(1 - 2 \zeta^2)}}}
+      \]
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 1.4.2.1.10 : Expression de \(\max(\beta)\)</span>
+      </header>
+
+      <div class="math-box__body">
+        Après developpement et factorisation, on trouve l'expression :
+        <div class="math-eq">
+          \[
+          \max(\beta) = \frac{1}{\left(1-2\zeta^2\right)\sqrt{\dfrac{1}{\left(1-2\zeta^2\right)^2}-1}}
+          \]
+      </div>
+    </section>
+
+    <p>
+      L'expression de la fréquence de résonnance a été prouvée (cf. Équation 1.4.2.1.9), mais physiquement à quoi correspond un phénomène de résonnance ?
+    </p>
+    
+    <p>
+      Pour répondre à cette question, il faut revenir à l'expression de la solution particulière \(u_p(t)\) (cf. Équation 1.4.2.1.5).
+    </p>
+
+    <p>
+      \(u_p(t)\) s'exprime aussi comme étant le régime stationnaire. La solution homogène \(u_h(t)\) est connue comme étant le régime transitoire du modèle physique.
+      Comme elle est caractérisée par une exponentielle décroissance, elle disparait lorsque \(t \to +\infty\).
+      \[
+      \lim_{t \to +\infty} u_h(t) = 0
+      \]
+      En \(t \to +\infty\), il ne reste donc plus que le régime stationnaire décrit par \(u_p(t) = U^p \cos(\omega t - \varphi)\) (cf. Équation 1.4.2.1.5).
+      \[
+      \lim_{t \to +\infty} u(t) = \lim_{t \to +\infty} (u_h(t) + u_p(t)) = 0 + \lim_{t \to +\infty} u_p(t)
+      \]
+    </p>
+
+    <p>
+      Le terme \(\cos(\omega t - \varphi)\) ne peut varier qu'entre \(-1\) et \(1\), peu importe la valeur de \(\omega t - \varphi\). C'est la définition même du cosinus.
+      L'élément qui pourrait rendre le système instable, c'est l'évaluation de l'amplitude \(U^p = U^{st} |\beta|\). \(U^{st}\) est une constante, il ne reste que le terme \(|\beta(\dfrac{\omega}{\omega_0})|\).
+    </p>
+
+    <p>
+      Si \(|\beta(\dfrac{\omega}{\omega_0})| \to +\infty \) alors \(U^p \to +\infty\) et donc \(u_p(t) \to +\infty\) également, ce qui correspond à un emballement du système. 
+    </p>
+    <p>
+      Il est important de rappeller que les valeurs de \(u(t)\), \(u_h(t)\) et \(u_p(t)\) expriment des déplacements (en m ou mm). 
+      Il est ainsi facile de comprendre qu'un déplacement de plusieurs mètres entraînerait de terribles conséquences sur le système.
+    </p>
+
+    <p>
+      Heureusement, l'ajout d'un amortisseur permet d'éviter que \(|\beta(\dfrac{\omega}{\omega_0})| \to +\infty \) et donc garentit une stabilité du modèle.
+    </p>
+
+    <section class="math-box is-theorem">
+      <header class="math-box__header">
+        <span class="math-box__title">Condition d'instabilité</span>
+      </header>
+
+      <div class="math-box__body">
+        Pour que \(|\beta(\dfrac{\omega}{\omega_0})|\) tende vers l'infini positif, la pulsation de la force d'excitation \(\omega\) doit tendre vers \(\omega^{re}\) et le système doit être conservatif :
+        <div class="math-eq">
+          \[
+          |\beta(\dfrac{\omega}{\omega_0})| \underset{\omega \to \omega^{re}}{\longrightarrow} +\infty \qquad \text{si et seulement si : } c=0
+          \]
+        </div>
+        En dehors de cette fréquence critique, le modèle est stable.
+      </div>
+    </section>
+
+    <p>
+      Remarque : Cette partie se concentre sur les systèmes à \(1\) \(ddl\) dont la fréquence de résonnance est unique. Pour d'autres systèmes conditionnés à \(n\) \(ddl\), il peut y avoir jusqu'à \(n\) fréquences de résonnance.
+    </p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+</body>
+</html>

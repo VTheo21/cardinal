@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Étude fréquentielle — |β|</title>
+
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    body{
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .wrap{
+      max-width: 900px;
+      width: 100%;
+    }
+    .row{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      align-items: end;
+    }
+    label{
+      font-size: 14px;
+      display: block;
+      margin-bottom: 4px;
+    }
+    input{
+      width: 100%;
+      padding: 8px;
+    }
+    button{
+      padding: 10px 14px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    #plot{
+      width: 100%;
+      height: 560px;
+      margin-top: 14px;
+    }
+    .hint{
+      font-size: 14px;
+      color: #555;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <!-- Inputs minimaux -->
+  <div class="row">
+    <div>
+      <label>ζ (utilisateur)</label>
+      <input id="zeta" type="number" step="0.05" value="0.70" min="0">
+    </div>
+    <div>
+      <label>Axe des abscisses (ω / ω₀)</label>
+      <input id="rmax" type="number" step="0.5" value="2" min="0.1">
+    </div>
+  </div>
+
+  <button id="btn">Tracer</button>
+
+  <p class="hint">
+    Note : ζ doit être < 1 pour le cas sous-amorti.
+  </p>
+
+  <div id="plot"></div>
+</div>
+
+<script>
+function linspace(a, b, n){
+  const arr = new Array(n);
+  const step = (b - a) / (n - 1);
+  for (let i = 0; i < n; i++) arr[i] = a + step * i;
+  return arr;
+}
+
+function computeAndPlot(){
+  const zeta = parseFloat(document.getElementById("zeta").value);
+  const rMax = parseFloat(document.getElementById("rmax").value);
+
+  const N = 2000; // FIXÉ (comme demandé)
+
+  if (zeta < 0 || rMax <= 0 || zeta > 1){
+    alert("Paramètres invalides.");
+    return;
+  }
+
+  // Axe fréquentiel
+  const r = linspace(0, rMax, N);
+
+  // β conservatif (ζ = 0)
+  const beta_conservatif = r.map(rr => {
+    const d = Math.abs(1 - rr*rr);
+    return d === 0 ? NaN : 1 / d;
+  });
+
+  // β utilisateur
+  const beta_user = r.map(rr => {
+    const d = Math.sqrt((1 - rr*rr)**2 + (2*zeta*rr)**2);
+    return d === 0 ? NaN : 1 / d;
+  });
+
+  // Liste ζp (identique au Python)
+  const zeta_p_list = [];
+  for (let x = 0.05; x <= 0.30 + 1e-12; x += 0.05) zeta_p_list.push(+x.toFixed(2));
+  for (let x = 0.30; x <= 0.80 + 1e-12; x += 0.10)
+    if (!zeta_p_list.includes(+x.toFixed(2))) zeta_p_list.push(+x.toFixed(2));
+
+  const traces = [];
+
+  // Conservatif
+  traces.push({
+    x: r, y: beta_conservatif,
+    mode: "lines",
+    name: "Conservatif (ζ=0)",
+    line: { dash: "dash", width: 1.5 },
+    opacity: 0.8
+  });
+
+  // Famille ζp
+  for (const zp of zeta_p_list){
+    const beta_p = r.map(rr => {
+      const d = Math.sqrt((1 - rr*rr)**2 + (2*zp*rr)**2);
+      return d === 0 ? NaN : 1 / d;
+    });
+
+    traces.push({
+      x: r, y: beta_p,
+      mode: "lines",
+      name: `ζ=${zp.toFixed(2)}`,
+      line: { width: 1 },
+      opacity: 0.5
+    });
+  }
+
+  // ζ utilisateur (jaune)
+  traces.push({
+    x: r, y: beta_user,
+    mode: "lines",
+    name: `ζ (utilisateur) = ${zeta.toFixed(2)}`,
+    line: { width: 2.8, color: "#f59e0b" }
+  });
+
+  const layout = {
+    title: { text: "Variation fréquentielle de |β|" },
+    xaxis: { title: "ω / ω₀", showgrid: true },
+    yaxis: {
+      title: "|β|",
+      type: "log",
+      range: [Math.log10(1e-2), Math.log10(1e2)],
+      showgrid: true
+    },
+    margin: { l: 70, r: 20, t: 60, b: 60 },
+    legend: { font: { size: 11 } }
+  };
+
+  Plotly.newPlot("plot", traces, layout, { responsive: true });
+}
+
+document.getElementById("btn").addEventListener("click", computeAndPlot);
+computeAndPlot();
+</script>
+
+</body>
+</html>

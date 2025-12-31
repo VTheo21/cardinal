@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Réponse amortie</title>
+
+  <!-- Plotly -->
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    body{
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+    }
+    .wrap{
+      max-width: 980px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .row{
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 0 auto;
+    }
+    label{ font-size: 14px; display: block; margin-bottom: 4px; }
+    input{ width: 100%; padding: 8px; }
+    #plot{ width: 100%; height: 520px; margin-top: 14px; }
+    .hint{ color: #555; font-size: 14px; }
+    button{ padding: 10px 14px; margin-top: 10px; cursor: pointer; }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <!-- Inputs : régime libre -->
+  <div class="row">
+    <div>
+      <label>ω₀ (rad/s)</label>
+      <input id="w0" type="number" step="0.1" value="5">
+    </div>
+    <div>
+      <label>ζ</label>
+      <input id="zeta" type="number" step="0.01" value="0.15">
+    </div>
+    <div>
+      <label>u₀ (m)</label>
+      <input id="u0" type="number" step="0.1" value="0.01">
+    </div>
+    <div>
+      <label>u̇₀ (m/s)</label>
+      <input id="u0dot" type="number" step="0.1" value="0.0">
+    </div>
+    <div>
+      <label>Axe des abscisses (t)</label>
+      <input id="tend" type="number" step="0.5" value="10">
+    </div>
+  </div>
+
+  <button id="btn">Tracer</button>
+  <p class="hint">Note : ζ doit être &lt; 1 pour le cas sous-amorti (ωd réel).</p>
+
+  <div id="plot"></div>
+</div>
+
+<script>
+function linspace(a, b, n){
+  const arr = new Array(n);
+  const step = (b - a) / (n - 1);
+  for (let i = 0; i < n; i++) arr[i] = a + step * i;
+  return arr;
+}
+
+function computeAndPlot(){
+  const w0 = parseFloat(document.getElementById("w0").value);
+  const zeta = parseFloat(document.getElementById("zeta").value);
+  const u0 = parseFloat(document.getElementById("u0").value);
+  const u0dot = parseFloat(document.getElementById("u0dot").value);
+  const tEnd = parseFloat(document.getElementById("tend").value);
+
+  const N = 2000; // FIXÉ
+
+  const inside = 1 - zeta*zeta;
+  if (inside <= 0){
+    alert("ζ doit être < 1 pour le cas sous-amorti (ωd réel).");
+    return;
+  }
+
+  const wd = w0 * Math.sqrt(inside);
+  const t = linspace(0, tEnd, N);
+
+  // u(t)
+  const u = t.map(tt => {
+    const expTerm = Math.exp(-zeta * w0 * tt);
+    return expTerm * (
+      u0 * Math.cos(wd * tt) +
+      ((u0dot + zeta * w0 * u0) / wd) * Math.sin(wd * tt)
+    );
+  });
+
+  // Enveloppe
+  const A = Math.sqrt(u0*u0 + ((zeta*w0*u0 + u0dot)/wd)**2);
+  const env = t.map(tt => A * Math.exp(-zeta * w0 * tt));
+  const envNeg = env.map(v => -v);
+
+  const traces = [
+    {
+      x: t, y: u,
+      mode: "lines",
+      name: "u(t)",
+      line: { width: 2, color: "#f59e0b" }
+    },
+    {
+      x: t, y: env,
+      mode: "lines",
+      name: "|u(t)|",
+      line: { width: 1, dash: "dash", color: "rgba(120,120,120,0.4)" }
+    },
+    {
+      x: t, y: envNeg,
+      mode: "lines",
+      showlegend: false,
+      line: { width: 1, dash: "dash", color: "rgba(120,120,120,0.4)" }
+    }
+  ];
+
+  const layout = {
+    title: "Déplacement u(t) en fonction du temps - régime libre",
+    xaxis: { title: "t (s)", showgrid: true },
+    yaxis: { title: "Déplacement u(t) (en m)", showgrid: true },
+    margin: { l: 60, r: 20, t: 60, b: 60 }
+  };
+
+  Plotly.newPlot("plot", traces, layout, { responsive: true });
+}
+
+document.getElementById("btn").addEventListener("click", computeAndPlot);
+computeAndPlot();
+</script>
+</body>
+</html>

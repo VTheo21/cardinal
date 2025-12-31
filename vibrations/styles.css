@@ -1,0 +1,324 @@
+:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+body{background:#f5f7fb;padding:24px;color:#0b1220}
+.container{max-width:1000px;margin:0 auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 8px 30px rgba(3,10,27,0.06)}
+h1{margin:0 0 10px;font-size:26px;color:#0c4177}
+h2{margin-top:25px;font-size:20px;color:#0b1220}
+h3{margin-top:25px;font-size:20px;color:#0c4177;margin: 25px}
+h4{margin-top:25px;font-size:18px;color:#0b1220}
+h5{margin-top:25px;font-size:16px;color:#0b1220}
+p{line-height:1.6}
+ul{margin:10px 0;padding-left:20px}
+li{margin-bottom:8px}
+.back-link{display:inline-block; margin-bottom:15px; color:#0e2b47; text-decoration:none; font-weight:bold;}
+.back-link:hover{text-decoration:underline;}
+
+/* === Base "cartouche" === */
+.math-box{
+  --accent: #e11d48;          /* rouge */
+  --bg: #ffe4e6;              /* rose clair */
+  --text: #111827;
+
+  background: var(--bg);
+  color: var(--text);
+  border-left: 4px solid var(--accent);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 16px 0;
+  box-shadow: 0 6px 18px rgba(17,24,39,0.08);
+}
+
+.math-box__header{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.math-box__title{
+  font-size: 0.98rem;
+}
+
+.math-box__body{
+  font-size: 0.98rem;
+}
+
+/* Équations à l’intérieur */
+.math-eq{
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(17,24,39,0.08);
+  border-radius: 10px;
+  overflow-x: auto; /* utile si équation longue */
+}
+
+/* === Variantes (couleurs) === */
+.math-box.is-remark{
+  --accent: #e11d48;
+  --bg: #ffe4e6;
+}
+
+.math-box.is-definition{
+  --accent: #2563eb;
+  --bg: #dbeafe;
+}
+
+.math-box.is-theorem{
+  --accent: #16a34a;
+  --bg: #dcfce7;
+}
+
+.math-box.is-example{
+  --accent: #7c3aed;
+  --bg: #ede9fe;
+}
+
+/* === Bloc style "cartouche" comme tes théorèmes/defs === */
+.media-box{
+  --accent: #e11d48;     /* change selon le type */
+  --bg: #ffe4e6;
+  --text: #111827;
+
+  background: var(--bg);
+  color: var(--text);
+  border-left: 4px solid var(--accent);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 16px 0;
+  box-shadow: 0 6px 18px rgba(17,24,39,0.08);
+}
+
+.media-box__header{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.media-box__title{
+  font-size: 0.98rem;
+}
+
+/* === Grille d’images centrée, responsive, N images === */
+.media-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+
+  /* centrage visuel du bloc */
+  align-items: start;
+  justify-items: center;
+}
+
+/* Chaque image + caption */
+.media-item{
+  width: 100%;
+  max-width: 420px;
+
+  margin: 0; /* important: figure a souvent une marge par défaut */
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(17,24,39,0.08);
+  border-radius: 12px;
+
+  display: grid;
+  grid-template-rows: auto auto;
+  justify-items: center; /* centre image + caption */
+  text-align: center;    /* centre caption */
+}
+
+.media-item img{
+  width: 100%;
+  height: 220px;         /* hauteur cohérente pour aligner */
+  object-fit: cover;     /* crop propre */
+  border-radius: 10px;
+  display: block;
+}
+
+.media-item figcaption{
+  margin-top: 8px;
+  font-size: 0.92rem;
+  opacity: 0.92;
+}
+
+/* Légende globale (optionnelle) */
+.media-box__caption{
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 0.92rem;
+  opacity: 0.9;
+}
+
+/* === Variantes de couleurs (comme defs/thms) === */
+.media-box.is-figure{
+  --accent: #7c3aed;
+  --bg: #ede9fe;
+}
+
+.media-box.is-photo{
+  --accent: #2563eb;
+  --bg: #dbeafe;
+}
+
+.media-box.is-gallery{
+  --accent: #16a34a;
+  --bg: #dcfce7;
+}
+
+.media-frame img{
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  transform: scale(var(--scale, 1));
+  transform-origin: center;
+}
+
+/* =========================================================
+   GRAPH-BOX — Cartouche pour graphiques (iframe / pages HTML)
+   Inspiré de .math-box et .media-box
+   ========================================================= */
+
+.graph-box{
+  --accent: #2563eb;            /* bleu */
+  --bg: #dbeafe;                /* bleu clair */
+  --text: #111827;
+
+  background: var(--bg);
+  color: var(--text);
+  border-left: 4px solid var(--accent);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 16px 0;
+  box-shadow: 0 6px 18px rgba(17,24,39,0.08);
+}
+
+.graph-box__header{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.graph-box__title{
+  font-size: 0.98rem;
+}
+
+/* Zone qui contient le graph (responsive) */
+.graph-box__body{
+  display: grid;
+  gap: 10px;
+}
+
+/* Cadre du graphique (style “carte” comme tes figures) */
+.graph-frame{
+  width: 100%;
+  max-width: 1100px;            /* ajuste si tu veux plus large */
+  margin: 0 auto;
+
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(17,24,39,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+
+  /* optionnel: petit effet "écran" */
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25);
+}
+
+*{ box-sizing: border-box; }
+html, body{ max-width: 100%; overflow-x: hidden; }
+
+.graph-box, .graph-frame, .graph-embed{
+  max-width: 100%;
+}
+
+/* Conteneur ratio pour iframe responsive (par défaut 16:9) */
+.graph-embed{
+  position: relative;
+  width: 100%;
+  height: min(70vh, 560px);  /* ajuste 560px si tu veux plus/moins */
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.35);
+}
+
+.graph-embed iframe{
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Iframe qui remplit le conteneur */
+.graph-embed > iframe{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Caption du graph */
+.graph-caption{
+  text-align: center;
+  font-size: 0.92rem;
+  opacity: 0.92;
+  margin-top: 8px;
+}
+
+/* Légende globale optionnelle */
+.graph-box__caption{
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 0.92rem;
+  opacity: 0.9;
+}
+
+/* =========================================================
+   Variantes de couleurs (comme defs/thms/figures)
+   ========================================================= */
+
+.graph-box.is-plot{
+  --accent: #f59e0b;           /* jaune (comme figure) */
+  --bg: #fef3c7;
+}
+
+.graph-box.is-interactive{
+  --accent: #16a34a;           /* vert */
+  --bg: #dcfce7;
+}
+
+.graph-box.is-note{
+  --accent: #e11d48;           /* rouge (remark) */
+  --bg: #ffe4e6;
+}
+
+/* =========================================================
+   Tailles / ratios (optionnels)
+   ========================================================= */
+
+/* Graph plus "cinéma" */
+.graph-box.is-wide .graph-embed{
+  --ratio: 21 / 9;
+}
+
+/* Graph plus “carré/haut” (utile pour certains plots) */
+.graph-box.is-tall .graph-embed{
+  --ratio: 4 / 5;
+}
+
+/* Plus de largeur max si besoin */
+.graph-box.is-xl .graph-frame{
+  max-width: 1280px;
+}
+
+/* Petit graph */
+.graph-box.is-sm .graph-frame{
+  max-width: 760px;
+}

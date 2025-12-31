@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Régime forcé — Réponse u(t)</title>
+
+  <!-- Plotly -->
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    body{
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+    }
+    .wrap{
+      max-width: 980px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .row{
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      margin: 0 auto;
+    }
+    label{ font-size: 14px; display: block; margin-bottom: 4px; }
+    input{ width: 100%; padding: 8px; }
+    #plot{ width: 100%; height: 520px; margin-top: 14px; }
+    .hint{ color: #555; font-size: 14px; }
+    button{ padding: 10px 14px; margin-top: 10px; cursor: pointer; }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <!-- Inputs : régime forcé -->
+  <div class="row">
+    <div>
+      <label>m (kg)</label>
+      <input id="m" type="number" step="0.1" value="10">
+    </div>
+    <div>
+      <label>k (N/m)</label>
+      <input id="k" type="number" step="1" value="100">
+    </div>
+    <div>
+      <label>c (N.s/m)</label>
+      <input id="c" type="number" step="0.1" value="2">
+    </div>
+    <div>
+      <label>Uᶢʳ (N)</label>
+      <input id="F" type="number" step="0.1" value="0.005">
+    </div>
+    <div>
+      <label>ω (rad/s)</label>
+      <input id="w" type="number" step="0.1" value="5">
+    </div>
+    <div>
+      <label>Axe des abscisses (t)</label>
+      <input id="tend" type="number" step="0.5" value="10">
+    </div>
+
+    <div>
+      <label>u₀ (m)</label>
+      <input id="u0" type="number" step="0.1" value="0.01">
+    </div>
+    <div>
+      <label>u̇₀ (m/s)</label>
+      <input id="u0dot" type="number" step="0.1" value="0.0">
+    </div>
+
+    <!-- cellules vides pour garder l'alignement -->
+    <div></div><div></div><div></div><div></div>
+  </div>
+
+  <button id="btn">Tracer</button>
+
+  <p class="hint">
+    Note : ζ doit être &lt; 1 pour le cas sous-amorti (ωd réel).
+  </p>
+
+  <div id="plot"></div>
+</div>
+
+<script>
+function linspace(a, b, n){
+  const arr = new Array(n);
+  const step = (b - a) / (n - 1);
+  for (let i = 0; i < n; i++) arr[i] = a + step * i;
+  return arr;
+}
+
+function computeAndPlot(){
+  const m = parseFloat(document.getElementById("m").value);
+  const k = parseFloat(document.getElementById("k").value);
+  const c = parseFloat(document.getElementById("c").value);
+  const F = parseFloat(document.getElementById("F").value);
+  const w = parseFloat(document.getElementById("w").value);
+
+  const u0 = parseFloat(document.getElementById("u0").value);
+  const u0dot = parseFloat(document.getElementById("u0dot").value);
+  const tEnd = parseFloat(document.getElementById("tend").value);
+
+  const N = 2000; // FIXÉ
+
+  if (m <= 0 || k <= 0){
+    alert("m et k doivent être > 0.");
+    return;
+  }
+
+  // Paramètres système
+  const w0 = Math.sqrt(k / m);
+  const zeta = c / (2 * Math.sqrt(k * m));
+
+  if (zeta >= 1){
+    alert("ζ ≥ 1 : régime non oscillant.");
+    return;
+  }
+
+  const wd = w0 * Math.sqrt(1 - zeta*zeta);
+
+  // Régime forcé
+  const ratio = w / w0;
+  const Up = (F * ratio**2) / Math.sqrt((1 - ratio*ratio)**2 + (2*zeta*ratio)**2);
+  const phi = Math.atan((2 * zeta * ratio) / (1 - ratio*ratio));
+
+  const t = linspace(0, tEnd, N);
+
+  const u = t.map(tt => {
+    const expTerm = Math.exp(-zeta * w0 * tt);
+    const trans = (u0 - Up * Math.cos(phi) - F) * Math.cos(wd * tt)
+      + ((u0dot + zeta * w0 * (u0 - F ) - Up * (zeta * w0 * Math.cos(phi) + w * Math.sin(phi))) / wd) * Math.sin(wd * tt);
+    return (expTerm * trans + Up * Math.cos(w * tt - phi) + F * Math.cos(w * tt));
+  });
+
+  const A = Math.sqrt((u0 - Up * Math.cos(phi) - F)**2 + ((u0dot + zeta * w0 * (u0 - F ) - Up * (zeta * w0 * Math.cos(phi) + w * Math.sin(phi))) / wd)**2);
+  const env = t.map(tt => A * Math.exp(-zeta * w0 * tt));
+  const envNeg = env.map(v => -v);
+
+  const traces = [
+    { x: t, y: u, mode: "lines", name: "u(t)", showlegend: true, line: { width: 2, color: "#f59e0b" }}
+  ];
+
+  const layout = {
+    title: "Déplacement u(t) en fonction du temps - régime forcé par un deplacement imposé",
+    xaxis: { title: "t (s)", showgrid: true },
+    yaxis: { title: "Déplacement u(t) (en m)", showgrid: true },
+    margin: { l: 60, r: 20, t: 60, b: 60 }
+  };
+
+  Plotly.newPlot("plot", traces, layout, { responsive: true });
+}
+
+document.getElementById("btn").addEventListener("click", computeAndPlot);
+computeAndPlot();
+</script>
+</body>
+</html>
