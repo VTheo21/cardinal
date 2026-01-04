@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PFD — Projectile : position, vitesse, accélération</title>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body{
+      font-family: system-ui, Segoe UI, Roboto, Arial;
+      background: #ffffff;
+      color: #111827;
+      overflow: hidden;
+    }
+
+    .wrap{
+      height: 100%;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 12px;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+
+    .card{
+      background: #ffffff;
+      border: 1px solid rgba(17,24,39,.14);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    header{
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(17,24,39,.10);
+    }
+    header h1{ margin:0; font-size: 15px; }
+    header p{ margin:6px 0 0; font-size: 13px; color: #4b5563; line-height: 1.35; }
+
+    .row{
+      display:flex; gap:10px; flex-wrap:wrap;
+      padding: 10px 14px;
+      align-items:center;
+      border-bottom: 1px solid rgba(17,24,39,.08);
+    }
+
+    button{
+      cursor:pointer;
+      border-radius: 12px;
+      border: 1px solid rgba(17,24,39,.18);
+      background: rgba(17,24,39,.04);
+      color: #111827;
+      padding: 9px 12px;
+      font-weight: 650;
+    }
+    button:hover{ background: rgba(17,24,39,.08); }
+
+    label{
+      color:#374151; font-size: 13px;
+      display:flex; gap:8px; align-items:center;
+    }
+    input[type=range]{ width: 180px; }
+
+    .pill{
+      margin-left:auto;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(17,24,39,.14);
+      background: rgba(17,24,39,.03);
+      color:#374151;
+      font-size:12px;
+      white-space: nowrap;
+    }
+
+    .fill{
+      flex: 1;
+      min-height: 0;
+      padding: 10px 14px 12px;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-rows: 1fr;
+      gap: 10px;
+    }
+
+    canvas{
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #f7fafc;
+      border-radius: 12px;
+      border: 1px solid rgba(17,24,39,.10);
+    }
+
+    .small{
+      font-size: 12px;
+      color: #4b5563;
+      padding: 8px 14px 10px;
+    }
+
+    .kpi{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 14px 14px;
+    }
+    .k{
+      background: rgba(17,24,39,.03);
+      border: 1px solid rgba(17,24,39,.10);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    .k .t{ color:#4b5563; font-size: 12px; }
+    .k .v{ margin-top:4px; font-size: 15px; font-weight: 750; }
+
+    /* 3 graphes + scroll si manque de place */
+    .graphs{
+      flex: 1;
+      min-height: 0;
+      padding: 10px 14px 14px;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      overflow: auto;
+    }
+    .graphs canvas{
+      height: 100%;
+      min-height: 170px;
+    }
+
+    @media (max-width: 900px){
+      body{ overflow:auto; }
+      .wrap{ grid-template-columns: 1fr; height:auto; }
+      .card{ min-height: 520px; }
+      input[type=range]{ width: 220px; }
+      .graphs{ overflow: visible; }
+      .fill{ grid-template-rows: 420px; }
+    }
+
+    /* ===== Mode EMBED (iframe/modale) ===== */
+    html.embed body{
+      overflow: auto;             /* on autorise le scroll */
+    }
+
+    /* Le layout ne force plus 100% pile, il peut grandir */
+    html.embed .wrap{
+      height: auto;
+      min-height: 100%;
+    }
+
+    /* Dans l’embed, on autorise la carte gauche à scroller si besoin */
+    html.embed .wrap > section.card{
+      overflow: auto;             /* évite le chevauchement */
+    }
+
+    /* Optionnel : un peu moins de padding pour gagner de la place */
+    html.embed .wrap{
+      padding: 8px;
+      gap: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <section class="card">
+      <header>
+        <h1>Projectile (pomme) — PFD :</h1>
+      </header>
+
+      <div class="row">
+        <button id="play">Pause</button>
+        <button id="reset">Relancer</button>
+
+        <label>Vitesse initiale v0
+          <input id="v0" type="range" min="6" max="17" step="0.5" value="14">
+          <span id="v0v">14</span> m/s
+        </label>
+
+        <label>Angle θ
+          <input id="ang" type="range" min="15" max="75" step="1" value="45">
+          <span id="angv">45</span>°
+        </label>
+
+        <div class="pill" id="state">En vol…</div>
+      </div>
+
+      <div class="fill">
+        <canvas id="scene"></canvas>
+      </div>
+
+      <div class="kpi">
+        <div class="k"><div class="t">Temps t (s)</div><div class="v" id="kt">0.00</div></div>
+        <div class="k"><div class="t">Hauteur y (m)</div><div class="v" id="ky">0.00</div></div>
+        <div class="k"><div class="t">Vitesse vᵧ (m/s)</div><div class="v" id="kvy">0.00</div></div>
+        <div class="k"><div class="t">Accélération aᵧ (m/s²)</div><div class="v" id="kay">-9.81</div></div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <header>
+        <h1>Graphes en temps réel (axe vertical)</h1>
+      </header>
+
+      <div class="graphs">
+        <canvas id="pos"></canvas>
+        <canvas id="vel"></canvas>
+        <canvas id="acc"></canvas>
+      </div>
+    </aside>
+  </div>
+
+<script>
+(() => {
+
+  const params = new URLSearchParams(location.search);
+  if (params.get("embed") === "1") {
+    document.documentElement.classList.add("embed");
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n) => (Math.round(n*100)/100).toFixed(2);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  const scene = $("scene"), sctx = scene.getContext("2d");
+  const posC = $("pos"), pctx = posC.getContext("2d");
+  const velC = $("vel"), vctx = velC.getContext("2d");
+  const accC = $("acc"), actx = accC.getContext("2d");
+
+  const playBtn = $("play");
+  const resetBtn = $("reset");
+  const v0 = $("v0"), ang = $("ang");
+  const v0v = $("v0v"), angv = $("angv");
+  const state = $("state");
+  const kt=$("kt"), ky=$("ky"), kvy=$("kvy"), kay=$("kay");
+
+  // g fixé
+  const G = 9.81;
+
+  // Fit canvases to CSS size (DPR aware)
+  function fitCanvas(c){
+    const r = c.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    c.width  = Math.max(1, Math.floor(r.width * dpr));
+    c.height = Math.max(1, Math.floor(r.height * dpr));
+    const ctx = c.getContext("2d");
+    ctx.setTransform(dpr,0,0,dpr,0,0); // draw in CSS pixels
+  }
+  function resizeAll(){
+    fitCanvas(scene);
+    fitCanvas(posC);
+    fitCanvas(velC);
+    fitCanvas(accC);
+  }
+
+  // Drawing helpers (graphs)
+  function drawAxes(ctx, w, h, title, yLabel, unit){
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = "#f7fafc";
+    ctx.fillRect(0,0,w,h);
+
+    // grid
+    ctx.strokeStyle = "rgba(17,24,39,0.08)";
+    ctx.lineWidth = 1;
+    for(let i=0;i<=10;i++){
+      const x = 48 + i*(w-76)/10;
+      ctx.beginPath(); ctx.moveTo(x, 24); ctx.lineTo(x, h-34); ctx.stroke();
+    }
+    for(let j=0;j<=6;j++){
+      const y = 24 + j*(h-60)/6;
+      ctx.beginPath(); ctx.moveTo(48, y); ctx.lineTo(w-22, y); ctx.stroke();
+    }
+
+    // axes
+    ctx.strokeStyle = "rgba(17,24,39,0.30)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(48, 24);
+    ctx.lineTo(48, h-34);
+    ctx.lineTo(w-22, h-34);
+    ctx.stroke();
+
+    // titles/labels
+    ctx.fillStyle = "rgba(17,24,39,0.95)";
+    ctx.font = "700 12px system-ui";
+    ctx.fillText(title, 54, 16);
+
+    ctx.fillStyle = "rgba(55,65,81,0.95)";
+    ctx.font = "600 11px system-ui";
+    ctx.fillText("t (s)", w-58, h-10);
+    ctx.fillText(`${yLabel} (${unit})`, 8, 36);
+  }
+
+  function drawTicks(ctx, w, h, tMax, yMin, yMax){
+    const left=48, top=24, right=w-22, bottom=h-34;
+
+    ctx.strokeStyle = "rgba(17,24,39,0.30)";
+    ctx.fillStyle = "rgba(55,65,81,0.95)";
+    ctx.font = "600 10.5px system-ui";
+
+    // X ticks
+    const nXTicks = 5;
+    for(let i=0;i<=nXTicks;i++){
+      const t = (i/nXTicks)*tMax;
+      const x = left + (i/nXTicks)*(right-left);
+
+      ctx.beginPath();
+      ctx.moveTo(x, bottom);
+      ctx.lineTo(x, bottom+6);
+      ctx.stroke();
+
+      const txt = t.toFixed(1);
+      ctx.fillText(txt, x - ctx.measureText(txt).width/2, bottom+18);
+    }
+
+    // Y ticks
+    const nYTicks = 5;
+    for(let j=0;j<=nYTicks;j++){
+      const yVal = yMin + (j/nYTicks)*(yMax-yMin);
+      const y = bottom - (j/nYTicks)*(bottom-top);
+
+      ctx.beginPath();
+      ctx.moveTo(left-6, y);
+      ctx.lineTo(left, y);
+      ctx.stroke();
+
+      const txt = yVal.toFixed(1);
+      ctx.fillText(txt, 6, y+4);
+    }
+  }
+
+  function plotLine(ctx, w, h, data, tMax, yMin, yMax, color){
+    const left=48, top=24, right=w-22, bottom=h-34;
+    const X = (t) => left + (t/tMax)*(right-left);
+    const Y = (y) => bottom - ((y - yMin)/(yMax-yMin))*(bottom-top);
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    for(let i=0;i<data.length;i++){
+      const {t,y} = data[i];
+      const px = X(t), py = Y(y);
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+
+    if(data.length){
+      const last = data[data.length-1];
+      ctx.fillStyle = "rgba(17,24,39,0.9)";
+      ctx.beginPath(); ctx.arc(X(last.t), Y(last.y), 4, 0, Math.PI*2); ctx.fill();
+    }
+
+    return { X, Y, left, top, right, bottom };
+  }
+
+  function drawTimeCursor(ctx, w, h, tNow, tMax){
+    const left=48, top=24, right=w-22, bottom=h-34;
+    const x = left + (tNow/tMax)*(right-left);
+
+    ctx.save();
+    ctx.setLineDash([6,5]);
+    ctx.strokeStyle = "rgba(17,24,39,0.45)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x, top);
+    ctx.lineTo(x, bottom);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Vector drawing (scene)
+  function drawArrow(ctx, x0, y0, x1, y1, label){
+    const dx = x1-x0, dy = y1-y0;
+    const ang = Math.atan2(dy, dx);
+    const head = 10;
+
+    ctx.beginPath();
+    ctx.moveTo(x0,y0);
+    ctx.lineTo(x1,y1);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x1 - head*Math.cos(ang - Math.PI/7), y1 - head*Math.sin(ang - Math.PI/7));
+    ctx.lineTo(x1 - head*Math.cos(ang + Math.PI/7), y1 - head*Math.sin(ang + Math.PI/7));
+    ctx.closePath();
+    ctx.fill();
+
+    if(label){
+      ctx.font = "700 12px system-ui";
+      ctx.fillText(label, x1 + 6, y1 - 6);
+    }
+  }
+
+  // Simulation state
+  let paused = false;
+  let t = 0, x = 0, y = 0, vx = 0, vy = 0, ay = -G;
+  let trace = [], yData = [], vyData = [], ayData = [];
+  let tMax = 3.5;
+  const dt = 1/60;
+
+  function relaunch(){
+    t = 0; x = 0; y = 0;
+    const V0 = parseFloat(v0.value);
+    const th = parseFloat(ang.value) * Math.PI/180;
+
+    vx = V0 * Math.cos(th);
+    vy = V0 * Math.sin(th);
+    ay = -G;
+
+    trace = []; yData = []; vyData = []; ayData = [];
+    tMax = Math.max(1.2, (2*V0*Math.sin(th))/G + 0.2);
+
+    state.textContent = "En vol…";
+    paused = false;
+    playBtn.textContent = "Pause";
+  }
+
+  function updateReadouts(){
+    const V0 = parseFloat(v0.value);
+    v0v.textContent = V0.toFixed(1).replace(/\.0$/,'');
+    angv.textContent = parseInt(ang.value,10);
+
+    kt.textContent = fmt(t);
+    ky.textContent = fmt(Math.max(0,y));
+    kvy.textContent = fmt(vy);
+    kay.textContent = fmt(ay);
+  }
+
+  function drawScene(){
+    const w = scene.getBoundingClientRect().width;
+    const h = scene.getBoundingClientRect().height;
+
+    sctx.clearRect(0,0,w,h);
+    sctx.fillStyle = "#f7fafc";
+    sctx.fillRect(0,0,w,h);
+
+    const origin = { x: 60, y: h - 70 };
+    const world = { xMax: 28, yMax: 14 };
+    const scale = { x: (w-110)/world.xMax, y: (h-120)/world.yMax };
+
+    // grid
+    sctx.strokeStyle = "rgba(17,24,39,0.06)";
+    sctx.lineWidth = 1;
+    for(let i=0;i<=14;i++){
+      const gx = 40 + i*(w-60)/14;
+      sctx.beginPath(); sctx.moveTo(gx, 20); sctx.lineTo(gx, h-40); sctx.stroke();
+    }
+    for(let j=0;j<=10;j++){
+      const gy = 20 + j*(h-60)/10;
+      sctx.beginPath(); sctx.moveTo(40, gy); sctx.lineTo(w-20, gy); sctx.stroke();
+    }
+
+    // ground
+    sctx.strokeStyle = "rgba(17,24,39,0.25)";
+    sctx.lineWidth = 3;
+    sctx.beginPath();
+    sctx.moveTo(40, origin.y);
+    sctx.lineTo(w-20, origin.y);
+    sctx.stroke();
+
+    // labels
+    sctx.fillStyle = "rgba(55,65,81,0.95)";
+    sctx.font = "600 12px system-ui";
+    sctx.fillText("x (m)", w-85, origin.y+28);
+    sctx.fillText("y (m)", 18, 32);
+
+    // trajectory
+    sctx.strokeStyle = "rgba(59,130,246,0.95)";
+    sctx.lineWidth = 2.5;
+    sctx.beginPath();
+    for(let i=0;i<trace.length;i++){
+      const pt = trace[i];
+      const px = origin.x + pt.x*scale.x;
+      const py = origin.y - pt.y*scale.y;
+      if(i===0) sctx.moveTo(px,py); else sctx.lineTo(px,py);
+    }
+    sctx.stroke();
+
+    // apple position
+    const axPx = origin.x + x*scale.x;
+    const ayPx = origin.y - y*scale.y;
+    const visX = clamp(axPx, 50, w-40);
+    const visY = clamp(ayPx, 30, origin.y);
+
+    // projections (pointillés)
+    sctx.save();
+    sctx.setLineDash([6,5]);
+    sctx.strokeStyle = "rgba(17,24,39,0.35)";
+    sctx.lineWidth = 1.5;
+    // vertical projection
+    sctx.beginPath(); sctx.moveTo(visX, visY); sctx.lineTo(visX, origin.y); sctx.stroke();
+    // horizontal projection
+    sctx.beginPath(); sctx.moveTo(visX, visY); sctx.lineTo(origin.x, visY); sctx.stroke();
+    sctx.restore();
+
+    // apple body
+    sctx.fillStyle = "rgba(239,68,68,0.95)";
+    sctx.beginPath(); sctx.arc(visX, visY, 14, 0, Math.PI*2); sctx.fill();
+
+    // highlight
+    sctx.fillStyle = "rgba(255,255,255,0.35)";
+    sctx.beginPath(); sctx.arc(visX-5, visY-5, 5, 0, Math.PI*2); sctx.fill();
+
+    // stem
+    sctx.strokeStyle = "rgba(17,24,39,0.55)";
+    sctx.lineWidth = 3;
+    sctx.beginPath(); sctx.moveTo(visX, visY-12); sctx.lineTo(visX+2, visY-22); sctx.stroke();
+
+    // leaf
+    sctx.fillStyle = "rgba(34,197,94,0.9)";
+    sctx.beginPath();
+    sctx.ellipse(visX+10, visY-23, 7, 4, -0.5, 0, Math.PI*2);
+    sctx.fill();
+
+    // vectors v and a
+    const vScale = 6;   // px per (m/s) for display
+    const aScale = 10;  // px per (m/s²) for display (ay only)
+
+    // velocity vector (vx, vy) (blue)
+    sctx.strokeStyle = "rgba(59,130,246,0.95)";
+    sctx.fillStyle   = "rgba(59,130,246,0.95)";
+    drawArrow(sctx, visX, visY, visX + vx*vScale, visY - vy*vScale, "v");
+
+    // acceleration vector (0, ay) (purple, downward)
+    sctx.strokeStyle = "rgba(99,102,241,0.95)";
+    sctx.fillStyle   = "rgba(99,102,241,0.95)";
+    drawArrow(sctx, visX, visY, visX, visY - ay*aScale, "g");
+
+    // legend
+    sctx.fillStyle = "rgba(17,24,39,0.95)";
+    sctx.font = "700 13px system-ui";
+    sctx.fillText("Trajectoire de la pomme", 52, 48);
+
+    sctx.fillStyle = "rgba(55,65,81,0.95)";
+    sctx.font = "600 12px system-ui";
+    sctx.fillText("Sans frottements", 52, 70);
+  }
+
+  function drawGraphs(){
+    const pr = posC.getBoundingClientRect();
+    const vr = velC.getBoundingClientRect();
+    const ar = accC.getBoundingClientRect();
+
+    // y(t)
+    const yMax = Math.max(2, ...yData.map(d=>d.y), 14);
+    drawAxes(pctx, pr.width, pr.height, "y(t) — position (parabolique)", "y", "m");
+    drawTicks(pctx, pr.width, pr.height, tMax, 0, yMax);
+    drawTimeCursor(pctx, pr.width, pr.height, t, tMax);
+    plotLine(pctx, pr.width, pr.height, yData, tMax, 0, yMax, "rgba(16,185,129,0.95)");
+
+    // vy(t)
+    const vyMin = Math.min(-20, ...vyData.map(d=>d.y), -parseFloat(v0.value));
+    const vyMax = Math.max( 20, ...vyData.map(d=>d.y),  parseFloat(v0.value));
+    drawAxes(vctx, vr.width, vr.height, "vᵧ(t) — vitesse (affine)", "vᵧ", "m/s");
+    drawTicks(vctx, vr.width, vr.height, tMax, vyMin, vyMax);
+    drawTimeCursor(vctx, vr.width, vr.height, t, tMax);
+    plotLine(vctx, vr.width, vr.height, vyData, tMax, vyMin, vyMax, "rgba(245,158,11,0.95)");
+
+    // ay(t)
+    drawAxes(actx, ar.width, ar.height, "aᵧ(t) — accélération (constante)", "aᵧ", "m/s²");
+    drawTicks(actx, ar.width, ar.height, tMax, -2*G, 0.5*G);
+    drawTimeCursor(actx, ar.width, ar.height, t, tMax);
+    plotLine(actx, ar.width, ar.height, ayData, tMax, -2*G, 0.5*G, "rgba(99,102,241,0.95)");
+  }
+
+  let last = performance.now();
+  function loop(now){
+    const elapsed = (now - last)/1000;
+    last = now;
+
+    if(!paused){
+      const steps = Math.min(6, Math.floor(elapsed / dt) + 1);
+      for(let i=0;i<steps;i++){
+        vy += ay * dt;
+        y  += vy * dt;
+        x  += vx * dt;
+        t  += dt;
+
+        if(t <= tMax + 0.2){
+          const yy = Math.max(0, y);
+          trace.push({x: x, y: yy});
+          yData.push({t: t, y: yy});
+          vyData.push({t: t, y: vy});
+          ayData.push({t: t, y: ay});
+        }
+
+        if(y <= 0 && t > 0.15){
+          y = 0;
+          state.textContent = "Touché le sol (fin du vol)";
+          paused = true;
+          playBtn.textContent = "Reprendre";
+          break;
+        }
+
+        if(trace.length > 1000) trace.shift();
+        if(yData.length > 700) { yData.shift(); vyData.shift(); ayData.shift(); }
+      }
+    }
+
+    updateReadouts();
+    drawScene();
+    drawGraphs();
+    requestAnimationFrame(loop);
+  }
+
+  playBtn.addEventListener("click", () => {
+    paused = !paused;
+    playBtn.textContent = paused ? "Reprendre" : "Pause";
+    state.textContent = paused ? "Pause" : "En vol…";
+  });
+
+  resetBtn.addEventListener("click", relaunch);
+
+  v0.addEventListener("input", () => v0v.textContent = parseFloat(v0.value).toFixed(1).replace(/\.0$/,''));
+  ang.addEventListener("input", () => angv.textContent = parseInt(ang.value,10));
+
+  // init
+  resizeAll();
+  window.addEventListener("resize", () => { resizeAll(); relaunch(); });
+
+  updateReadouts();
+  relaunch();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

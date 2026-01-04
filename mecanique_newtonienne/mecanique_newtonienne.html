@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mécanique newtonienne</title>
+    <link rel="icon" href="../assets/logo.png" type="image/png">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+    <a href="../index.html" class="back-link">← Retour</a>
+    <h1>Mécanique newtonienne</h1>
+
+    <h2>1. Introduction</h2>
+    
+    <p>
+        La mécanique newtonienne ou mécanique classique est une branche fondamentale de la physique qui décrit le mouvement des objets et les forces qui agissent sur eux. 
+        Elle a été formulée au XVIIᵉ siècle par Isaac Newton et reste aujourd’hui essentielle pour comprendre la plupart des phénomènes du quotidien (vibrations, dimensionnement de structures, mécanique des fluides, etc...).
+    </p>
+
+    <p>
+        La mécanique classique fonctionne très bien lorsque l'étude porte sur des systèmes macroscopiques à vitesse faible devant celle de la lumière. En dehors de cette condition, elle devient insuffisante. 
+        Il faut donc se tourner vers d'autres méthodes comme la mécanique quantique ou la rélativité générale.
+    </p>
+
+    <p>
+        Newton a laissé derrière lui trois lois symbolisant le concept de la mécanique qu'il a étudié et défini :
+    </p>
+
+    <section class="math-box is-theorem">
+      <header class="math-box__header">
+        <span class="math-box__title">Lois du mouvement de Newton</span>
+      </header>
+
+      <div class="math-box__body">
+        <p>
+        Première loi :
+        </p>
+        
+        <div class="math-eq">
+          « Tout corps persévère dans l'état de repos ou de mouvement uniforme en ligne droite dans lequel il se trouve, à moins que quelque force n'agisse sur lui, et ne le contraigne à changer d'état. »
+        </div>
+        <p>
+        Deuxième loi :
+        </p>
+        <div class="math-eq">
+          « Les changements qui arrivent dans le mouvement sont proportionnels à la force motrice et se font dans la ligne droite dans laquelle cette force a été imprimée. »
+        </div>
+        <p>
+        Troisième loi :
+        </p>
+        <div class="math-eq">
+          « L'action est toujours égale et opposée à la réaction ; c'est-à-dire, que les actions de deux corps l'un sur l'autre sont toujours égales, et dans des directions contraires. »
+        </div>
+      </div>
+    </section>
+
+    <h2>
+        2. Principe Fondamental de la Statique
+    </h2>
+
+    <p>
+        Le théorème de l'équilibre (TE), aussi appelé le Principe Fondamental de la Statique (PFS) permet d'étudier les objets immobiles. 
+        Il exprime les conditions pour qu'un solide indéformable soit en équilibre statique dans un référentiel galiliéen.
+    </p>
+
+    <section class="math-box is-definition">
+      <header class="math-box__header">
+        <span class="math-box__title">Définition 2.1 : Référentiel galiliéen</span>
+      </header>
+
+      <div class="math-box__body">
+        Un référentiel galiléen est un référentiel dans lequel un corps isolé (sans force extérieure) est au repos ou en mouvement rectiligne uniforme.
+        Autrement dit, un référentiel galiliéen est définit comme un référentiel qui vérifie la première loi de Newton.
+      </div>
+    </section>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 2.1 : Principe Fondamental de la Statique (première loi de Newton)</span>
+      </header>
+
+      <div class="math-box__body">
+        <p>
+            Voici l'énoncé mathématique du PFS :
+        </p>
+        <div class="math-eq">
+        <ul>
+            <li>« \( \sum \vec{F}_{ext} = \vec{0}\) » : La somme des forces extérieures appliquées à l'objet est égale à 0 (équilibre des forces)</li>
+            <li>« \( \sum \vec{M}_A = \vec{0}\) » : La somme des moments extérieurs appliqués au point \( A \) à l'objet est égale à 0 (équilibre des moments) (\( A \) est un point quelconque)</li>
+        </ul>
+        </div>
+      </div>
+    </section>
+
+    <p>
+        Physiquement, l'équation 2.1 se traduit de la manière suivante :
+    </p>
+    <ul>
+        <li>« \( \sum \vec{F}_{ext} = \vec{0}\) » : Le solide ne se déplace pas (pas de translation)</li>
+        <li>« \( \sum \vec{M}_A = \vec{0}\) » : Le solide ne tourne pas (pas de rotation)</li>
+    </ul>
+
+    <p>
+        Pour traiter des cas de systèmes statiques, le PFS est combiné avec la troisième loi de Newton.
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 2.2 : Principe des actions réciproques (troisième loi de Newton) :</span>
+      </header>
+
+      <div class="math-box__body">
+        <p>
+            Si l'on applique une force provenant d'un objet \( A \) sur un objet \( B \), c'est comme si l'objet \( B \) appliquerai la même force opposée sur l'objet \( A \) :
+        </p>
+        <div class="math-eq">
+        \[
+        \vec{F}_{A/B} = -\vec{F}_{B/A} \quad \text{et} \quad \vec{F}_{A/B} \wedge \overrightarrow{AB} = \vec{0}
+        \]
+        </div>
+      </div>
+    </section>
+
+    <p>
+        Pour mieux comprendre, voici une illustration :
+    </p>
+
+    <section class="media-box is-figure">
+      <header class="media-box__header">
+        <span class="media-box__title">
+          Figure 2.1 — Schéma mécanique simple pour illustrer la première et la troisième loi de Newton
+        </span>
+      </header>
+
+      <div class="media-grid">
+        <figure class="media-item">
+          <div class="media-frame">
+            <img
+              src="images\pfs_troisieme_loi.png"
+              alt="Homme debout en équilibre"
+              style="--scale: 1"
+            >
+          </div>
+          <figcaption>Homme debout en équilibre statique</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <p>
+        La figure 2.1 comporte un élément \( A \) et un élément \( B \).
+    </p>
+
+    <p>
+        Dans cet exemple, on pourrait croire que la seule force présente est celle du poids de l'homme notée \( \vec{F}_{A} = m \vec{g} = - m g \cdot \vec{y} \). 
+        Hors ce n'est pas possible, car cela invaliderait la première loi de Newton (car \( \vec{F}_{A} \neq 0\)).
+    </p>
+    <p>
+        La deuxième force active est la réaction du sol \( B \) à la force excercée par \( A \), qui est l'opposée du poids de l'homme (\( \vec{F}_{B}= - \vec{F}_{A} \)). Elle vient directement du principe des actions réciproques (3ᵉ loi de Newton) :
+        quand A exerce une force sur B, B exerce une force de même intensitée et opposée sur A.
+    </p>
+
+    <p>
+        Si l'on applique le principe fondamental de la statique, on obtient :
+    </p>
+    
+    <p>
+        \[
+        \sum \vec{F}_{ext} = \vec{0}
+        \]
+        \[
+        \vec{F}_{A} + \vec{F}_{B} = \vec{0}
+        \]
+        \[
+        \left\lVert \vec{F}_A \right\rVert + \left\lVert \vec{F}_B \right\rVert = 0
+        \]
+        \[
+        \left\lVert \vec{F}_A \right\rVert = - \left\lVert \vec{F}_B \right\rVert
+        \]
+        \[
+        F_A \cdot \vec{y} = -\,F_B \cdot \vec{y}
+        \]
+        \[
+        F_B \cdot \vec{y} = m g \cdot \vec{y}
+        \]
+        Ici, il n'y a pas de couple mécanique :
+        \[
+        \sum \vec{M}_{A} = \vec{0}
+        \]
+        \[
+        \vec{0} = \vec{0}
+        \]
+    </p>
+
+    <p>
+        L’exemple étudié est volontairement simple. Il permet de mettre clairement en évidence l’origine de la force de réaction \( \vec{F}_{B} \)
+        et l’application directe de la première et troisième loi de Newton.
+    </p>
+
+    <p>
+        Ce raisonnement ne se limite pas à ce cas élémentaire. 
+        Il peut être généralisé à tout système mécanique, dès lors qu’il existe des interactions entre des solides : contacts, liaisons mécaniques, appuis, articulations ou encore transmissions d’efforts. 
+        Dans des systèmes plus complexes (structures, mécanismes, bras robotiques, machines industrielles), les mêmes principes s’appliquent : chaque action mécanique engendre une réaction, et l’équilibre résulte de l’ensemble des forces et des moments en jeu.
+    </p>
+
+    <h2>
+        3. Principe Fondamental de la Dynamique
+    </h2>
+
+    <p>
+        Le Principe Fondamental de la Dynamique (PFD) permet d'étudier les objets en mouvement.
+    </p>
+
+    <section class="math-box is-remark">
+      <header class="math-box__header">
+        <span class="math-box__title">Équation 3.1 : Principe Fondamental de la Dynamique</span>
+      </header>
+
+      <div class="math-box__body">
+        <p>
+            La somme des forces extérieures appliquées à un système est égale au produit de sa masse par son accélération :
+        </p>
+        <div class="math-eq">
+        \[
+        \sum \vec{F}_{ext} = m \cdot \vec{a}
+        \]
+        </div>
+      </div>
+    </section>
+
+    <p>
+        Pour mieux comprendre l'équation 3.1, voici une animation qui représente le lancer d'une pomme :
+    </p>
+
+    <button class="open-sim" id="openPFD">Ouvrir l’animation (PFD)</button>
+
+
+    <div class="modal" id="pfdModal" aria-hidden="true">
+    <div class="modal__backdrop" data-close></div>
+
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-label="Animation PFD">
+        <div class="modal__header">
+        <div class="modal__title">Animation — Projectile (PFD)</div>
+        <button class="modal__close" type="button" data-close>✕</button>
+        </div>
+
+        <div class="modal__body">
+        <iframe
+            id="pfdFrame"
+            data-src="animations/pfd.html?embed=1"
+            loading="lazy"
+            referrerpolicy="no-referrer"
+        ></iframe>
+        </div>
+        </div>
+    </div>
+
+    <p>
+    Cette expérience illustre le mouvement d’un projectile soumis uniquement à son poids (les frottements sont négligés).
+    L’objet étudié (ici une pomme) est lancé avec une vitesse initiale et un angle donnés, puis évolue dans un référentiel galiléen sans frottements.
+    </p>
+
+    <section class="media-box is-figure">
+      <header class="media-box__header">
+        <span class="media-box__title">
+          Figure 3.1 — Trajectoire de la pomme & Schéma mécanique du système
+        </span>
+      </header>
+
+      <div class="media-grid">
+        <figure class="media-item">
+          <div class="media-frame">
+            <img
+              src="images\pfd_lancer_pomme.png"
+              alt="Homme debout en équilibre"
+              style="--scale: 1"
+            >
+          </div>
+          <figcaption>Trajectoire de la pomme (V = 14 m/s et θ = 45°)</figcaption>
+        </figure>
+        <figure class="media-item">
+          <div class="media-frame">
+            <img
+              src="images/schema_mecanique_lancer_pomme.png"
+              alt="Homme debout en équilibre"
+              style="--scale: 1"
+            >
+          </div>
+          <figcaption>Schéma mécanique du système</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <p>
+    La trajectoire observée est une parabole. 
+    Ce résultat provient du fait que le mouvement horizontal est uniforme, tandis que le mouvement vertical est uniformément accéléré sous l’action de la gravité. 
+    L’accélération verticale est constante et dirigée vers le bas, de valeur <em>g ≃ 9,81 m·s⁻²</em>.
+    </p>
+
+    <h4>
+      Détail des calculs de l'animation :
+    </h4>
+
+    <p>
+      PFD / 2e loi de Newton : Une seule force le poids de la pomme noté \( \vec{P} = 0 \cdot \vec{x} - m g \cdot \vec{y} \) :
+    </p>
+
+    <p>
+        \[
+        \sum \vec{F}_{ext} = m \cdot \vec{a}
+        \]
+        \[
+        \vec{P} = m \cdot \vec{a}
+        \]
+        <h5>
+          Projection sur l'axe \( \vec{y} \) :
+        </h5>
+        \[
+        -mg \cdot \vec{y} = ma(t) \cdot \vec{y}
+        \]
+        \[
+        \boxed{\,a(t) = -g  \,}
+        \]
+        <p>
+        <p>
+        On obtient une accélération constante de valeur <em>g ≃ 9,81 m·s⁻²</em>.
+        </p>
+
+        <p>
+        On sait que l'accélération est la dérivée seconde de la position : \(a(t) = \frac{d^{2}x(t)}{dt^{2}} \) (ou en notation de Newton \(a = \ddot{x}(t) \)).
+        </p>
+        <p>
+        On sait aussi que l'accélération est la dérivée de la vitesse : \(a(t) = \frac{dv(t)}{dt} \) (ou en notation de Newton \(a(t) = \dot{v}(t) \)) :
+        </p>
+        \[
+        -g \cdot \vec{y} = \frac{dv(t)}{dt} \cdot \vec{y}
+        \]
+        \[
+        \int \left( -g \cdot \vec{y} \right)\, dt = \int \frac{dv(t)}{dt} \cdot \vec{y}\, dt
+        \]
+        \[
+        v_y(t) = \int \left( -g \right)\, dt
+        \]
+        \[
+        v_y(t) = -g\,t + v_{0y}
+        \]
+        <p>
+          On trouve une vitesse de la forme d'une courbe affine. Pour trouver la constante d'intégration, il faut utiliser la condition initiale :
+        </p>
+        \[
+        v_y(0) = v_{0y}
+        \]
+        <p>
+          Pour que le système ait du sens, il faut que \(v_{0y} = v_{initiale} \times \sin(\theta) \). 
+          La vitesse initiale vient du fait que l'expérience commence lorsque \(t = 0\, s \) donc lorsque l'homme lache la pomme pour la lancer. De ce fait, la pomme est déjà en mouvement et donc possède déjà une vitesse.
+          Le \( \sin(\theta) \) est l’inclinaison du lancer, plus on jete l’objet vers le haut, plus il monte, et inversement si on le projecte de plus en plus à l’horizontale.
+        </p>
+        \[
+        v_y(0) = v_{0y} = v_{initiale} \times \sin(\theta)
+        \]
+        \[
+        \boxed{\,v_y(t) = -g\,t + v_{initiale} \times \sin(\theta)\,}
+        \]
+        <p>
+          On cherche ensuite la forme de la courbe qui décrit la position \( y \) de la pomme par rapport au temps :
+        </p>
+        \[
+        v_y(t) = \frac{dy(t)}{dt}
+        \]
+        \[
+        y(t) = \int \left( -g\,t + v_{initiale} \times \sin(\theta) \right)\, dt
+        \]
+        \[
+        \boxed{\,y(t) = -\frac{1}{2}g\,t^2 + v_{initiale} \times \sin(\theta) \, t + y_0\,}
+        \]
+        <p>
+          Sans surprise, la courbe de la position est une parabole. Pour trouver la constante d'intégration, il faut utiliser la condition initiale :
+        </p>
+        \[
+        y(0) = y_0 = h
+        \]
+        <p>
+          \( y(0) = h \) veut simpliment dire que l'homme s'est surélevé d'une hauteur \( h \) pour lancer la pomme. S'il était resté à même le sol \( h = 0 \).
+        </p>
+        \[
+        \boxed{\,y(t) = -\frac{1}{2}g\,t^2 + v_{initiale} \times \sin(\theta) \, t + h \,}
+        \]
+
+        <h5>
+          Projection sur l'axe \( \vec{x} \) :
+        </h5>
+        \[
+        0 \cdot \vec{x} = ma \cdot \vec{x}
+        \]
+        <p>
+          Il n'y a pas d'accélération sur l'axe \( \vec{x} \), mais il y a bien une vitesse et une position.
+        </p>
+        \[
+        0 \cdot \vec{x} = \frac{dv(t)}{dt} \cdot \vec{x}
+        \]
+        \[
+        \int \left( 0 \cdot \vec{x} \right)\, dt = \int \frac{dv(t)}{dt} \cdot \vec{x}\, dt
+        \]
+        \[
+        v_x(t) = \int \left( 0 \right)\, dt
+        \]
+        \[
+        v_x(t) = v_0
+        \]
+        <p>
+          On trouve une vitesse constante. Pour trouver la constante d'intégration, il faut utiliser la condition initiale :
+        </p>
+        \[
+        v_x(0) = v_{0x}
+        \]
+        <p>
+          On utilise le même raisonement que tout à la l'heure : pour que le système ait du sens, il faut que \(v_{0x} = v_{initiale} \times \cos(\theta) \). 
+        </p>
+        \[
+        v_x(0) = v_{0x} = v_{initiale} \times \cos(\theta)
+        \]
+        \[
+        \boxed{\,v_x(t) = v_{initiale} \times \cos(\theta)\,}
+        \]
+        <p>
+          On intègre une seconde fois pour obtenir la courbe qui décrit la position \( x \)  de la pomme par rapport au temps :
+        </p>
+        \[
+        v_x(t) = \frac{dx(t)}{dt}
+        \]
+        \[
+        x(t) = \int \left( v_{initiale} \times \cos(\theta) \right)\, dt
+        \]
+        \[
+        \boxed{\,x(t) = v_{initiale} \times \cos(\theta) \, t + x_0\,}
+        \]
+        <p>
+          Pour trouver la constante d'intégration, il faut utiliser la condition initiale :
+        </p>
+        \[
+        x(0) = x_0 = 0
+        \]
+        <p>
+          Si \( x(0) \neq 0 \), cela exprimerait que l'homme s'est déplacé sur l'axe \( x \) avant de jeter la pomme. 
+          C'est possible, mais ça n'a pas énormement de sens.
+        </p>
+        \[
+        \boxed{\,x(t) = v_{initiale} \times \cos(\theta) \, t \,}
+        \]
+    </p>
+
+    <p>
+      Les équations \( x(t) \) et \( y(t) \) ont été déterminées, mais elles dépendent tous les deux du temps. Hors, l'objectif de l'étude est de trouver une équation qui prend en compte la hauteur et la longueur du lancé.
+    </p>
+
+    <p>
+      On utilise donc l'équation de \( x(t) \) pour exprimer \( t \) en fonction de \( x \) :
+    </p>
+
+    <p>
+      \[
+      t = \frac{x}{v_{initiale} \times \cos(\theta)}
+      \]
+    </p>
+
+    <p>
+      On injecte ensuite \( t \) dans \( y(t) \) :
+    </p>
+
+    <p>
+      \[
+      y(x) = -\frac{1}{2}g\,(\frac{x}{v_{initiale} \times \cos(\theta)})^2 + v_{initiale} \times \sin(\theta) \, (\frac{x}{v_{initiale} \times \cos(\theta)}) + h
+      \]
+    </p>
+
+    <p>
+      \[
+      \boxed{\,y(x) = -\frac{g}{2v_{initiale}^2\cos(\theta)^2}x^2 + \tan{\theta}x+h \,}
+      \]
+    </p>
+
+    <h5>
+      On obtient enfin l'expression finale \( y(x) \) qui décrit le comportement de la pomme dans l'espace.
+    </h5>
+
+    <p>
+      Ce qui est très intérésant dans ces calculs est que la distance maximale parcourue par la pomme ne dépend pas de sa masse, mais seulement de la vitesse initiale qu'on lui donne et de l'angle d'inclinaison de lancer.
+    </p>
+
+    <p>
+      Pour que cette pomme parcourt le plus de distance possible, il faut donc appliquer la plus grande vitesse initiale possible et avoir une angle d'inclinaison \(\theta = 45° \).
+    </p>
+
+    <p>
+      La distance parcourue par la pomme est donnée par l'équation suivante :
+    </p>
+
+    <p>
+      \[
+      -\frac{g}{2v_{\text{initiale}}^{2}\cos^{2}\theta}\,x^{2}
+      +\tan(\theta)\,x+h=0
+      \]
+
+      \[
+      \frac{g}{2v_{\text{initiale}}^{2}\cos^{2}\theta}\,x^{2}
+      -\tan(\theta)\,x-h=0
+      \]
+
+      \[
+      Ax^2+Bx+C=0
+      \]
+
+      \[
+      A=\frac{g}{2v_{\text{initiale}}^{2}\cos^{2}\theta},
+      \qquad
+      B=-\tan(\theta),
+      \qquad
+      C=-h
+      \]
+
+      \[
+      x=\frac{-B\pm\sqrt{B^{2}-4AC}}{2A}
+      \]
+
+      \[
+      x=\frac{\tan(\theta)\pm\sqrt{\tan^{2}(\theta)+\frac{2gh}{v_{\text{initiale}}^{2}\cos^{2}\theta}}}
+      {\frac{g}{v_{\text{initiale}}^{2}\cos^{2}\theta}}
+      \]
+
+      \[
+      x=\frac{v_{\text{initiale}}^{2}\cos^{2}\theta}{g}
+      \left(
+      \tan(\theta)\pm\sqrt{\tan^{2}(\theta)+\frac{2gh}{v_{\text{initiale}}^{2}\cos^{2}\theta}}
+      \right)
+      \]
+
+      \[
+      x=\frac{v_{\text{initiale}}^{2}\cos\theta}{g}
+      \left(
+      \sin\theta\pm\sqrt{\sin^{2}\theta+\frac{2gh}{v_{\text{initiale}}^{2}}}
+      \right)
+      \]
+    </p>
+
+    <p>
+      \[
+      \boxed{\,x = \frac{v_{\text{initiale}}^{2}}{g} \left( \frac{\sin2\theta}{2} + \sqrt{\sin^{2}\theta+\frac{2gh}{v_{\text{initiale}}^{2}}}\right) \,}
+      \]
+    </p>
+
+    <p>
+      \(x \) est la longueur maximale que la pomme aura parcourue.
+    </p>
+
+    <section class="media-box is-figure">
+      <header class="media-box__header">
+        <span class="media-box__title">
+          Figure 3.2 — Etude de la trajectoire de la pomme
+        </span>
+      </header>
+
+      <div class="media-grid">
+        <figure class="media-item">
+          <div class="media-frame">
+            <img
+              src="images/vitesse_initiale.png"
+              alt="Homme debout en équilibre"
+              style="--scale: 1"
+            >
+          </div>
+          <figcaption>Variation de la vitesse initiale (e 6 à 18 m/s)</figcaption>
+        </figure>
+        <figure class="media-item">
+          <div class="media-frame">
+            <img
+              src="images/angle_initiale.png"
+              alt="Variation de l’angle"
+              style="--scale: 1"
+            >
+          </div>
+          <figcaption>Variation de l’angle (de 15° à 75°)</figcaption>
+        </figure>
+      </div>
+      <div class="media-grid">
+        <figure class="media-item">
+          <div class="media-frame">
+            <img
+              src="images/hauteur_initiale.png"
+              alt="Homme debout en équilibre"
+              style="--scale: 1"
+            >
+          </div>
+          <figcaption>Variation de la hauteur initiale (de 0 à 10 m)</figcaption>
+        </figure>
+      </div>
+    </section>
+
+
+    <p>
+    L’animation met en évidence la décomposition du mouvement selon les axes horizontal et vertical. 
+    Le vecteur vitesse évolue au cours du temps : sa composante horizontale reste constante, tandis que sa composante verticale diminue linéairement jusqu’à s’annuler au sommet de la trajectoire, puis devient négative lors de la phase de descente.
+    </p>
+
+    <p>
+    Les graphes associés permettent de relier directement les équations du mouvement aux grandeurs physiques observées. 
+    La position verticale <em>y(t)</em> suit une loi parabolique, la vitesse verticale <em>v<sub>y</sub>(t)</em> est une fonction affine du temps, et l’accélération verticale <em>a<sub>y</sub>(t)</em> est constante.
+    </p>
+
+    <p>
+    Cette expérience numérique constitue ainsi une application directe du Principe Fondamental de la Dynamique, selon lequel la somme des forces extérieures appliquées à un système est égale au produit de sa masse par son accélération. 
+    Dans ce cas, la seule force prise en compte est le poids, ce qui explique la simplicité et la régularité des lois observées.
+    </p>
+
+
+
+
+</div>
+
+<script>
+  const modal = document.getElementById('pfdModal');
+  const openBtn = document.getElementById('openPFD');
+  const frame = document.getElementById('pfdFrame');
+
+    function openModal(){
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+
+    if (!frame.src) frame.src = frame.dataset.src;
+
+    // et on force un resize après chargement
+    frame.addEventListener("load", () => {
+        frame.contentWindow?.postMessage({ type: "PFD_RESIZE" }, "*");
+    }, { once: true });
+    }
+
+  function closeModal(){
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  openBtn.addEventListener('click', openModal);
+
+  modal.addEventListener('click', (e) => {
+    if (e.target.matches('[data-close]')) closeModal();
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+  });
+</script>
+
+</body>
+</html>
